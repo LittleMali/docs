@@ -89,14 +89,11 @@ status & TUN_READ ==> read_incoming_tun
                     case IOSTATE_INITIAL:
                         ret = -1;
 
-// 既然是驱动抛上来的数据，那么应该跟驱动有点关系
-multi_tcp_wait -- tunnel_server -> tunnel_server_tcp 一路调过来的，不用跟
-
+// IOSTATE_QUEUED表示队列中有数据要读取了。我们去找哪里给它赋值的。如下：
 io_wait
-io_wait_dowork(c, flags);
-
-    tun_set
-        tun_read_queue(tt, 0);
+    io_wait_dowork(c, flags);
+        tun_set
+            tun_read_queue(tt, 0);
 
 有什么区别
 enum windows_driver_type {
