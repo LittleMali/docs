@@ -6,7 +6,8 @@ git submodule的核心点是父子仓库的关联，关联了一个commit id。
 &nbsp;&nbsp;--child
 ## submodule merge
 两条分支master和dev，dev如何合入到master中去呢？
-* 通常来说master是受保护的，我们没有权限将代码push上去，如果直接将dev-->master，那么一旦有冲突，会很麻烦。所以，通常需要将master先反向同步到dev（master-->dev），这样即使有冲突，冲突也在我们的dev上，可以方便解决。
+* 通常来说master是受保护的，我们没有权限将代码push上去.
+* 如果在git上提merge单，直接将dev-->master，那么一旦有冲突，冲突会体现在master上，而我们又没有权限修改master代码，这就很麻烦了。所以，通常需要将master先反向同步到dev（master-->dev），这样即使有冲突，冲突也在我们的dev上，可以方便解决。
 * 因此，merge其实是两大步，先将master-->dev，再将dev-->master。
 
 假设我们的父子仓库都有两条代码线主线master和分支dev。
@@ -21,3 +22,12 @@ git submodule的核心点是父子仓库的关联，关联了一个commit id。
 8. 进入father目录，切换到dev，此时father处于dev分支，child处于master分支，将父子关联id提交并push，这样，father dev分支关联的是child master分支。注意，在这个时刻，父子关联的commit id就是我们所需要的id，这个id对应了**子仓库**最新最全的代码。
 9. 在git平台提交father的merge申请，将dev-->master。此时，因为father dev关联的是master最新的commit id，这个id正是我们所需要的id，所以，关联id这里不会有冲突（fast forward）。可能出现冲突的地方是father目录自己的文件，这个步骤，我们之前在step3中处理过了。
 
+
+1. 本地进入submodule child目录，切换到dev分支，将submodule child master-->dev，处理冲突，并将child dev push。这样，child dev已经是最新的代码，并且没有冲突了。
+2. 在git平台上，进入submodule child仓库，提交merge单，将child dev-->master，因为我们之前在本地child dev反向同步过child master代码，所以，直接提merge单不会有冲突发生，不用担心child master会有问题。
+3. 至此，子仓库处理完了，我们再来处理父仓库。
+4. 本地进入submodule child目录，切换到master分支，并pull拉取刚刚提交的merge内容。
+5. 本地进入father目录，切换到dev分支，将father master-->dev，处理father目录下的冲突。注意，冲突实际有两部分，一个是father自身代码的冲突，一个是父子关联id的冲突。我们只用处理自身代码冲突即可。处理完，不要急着push，先想想关联id对不对。
+6. 此时，父仓库在dev分支，子仓库在master分支。父仓库dev关联到的子仓库id，是child master，这个id就是全部merge完以后我们所需要的id。因此，如果父仓库有提示关联id冲突了，我们直接以本地id为准即可。
+7. 父仓库push，push的同时一并推送关联id。
+8. 在git平台上，进入father仓库，提交merge单，将father dev-->master，因为本地反向同步过了，所以，merge以后master分支不会有冲突。并且，merge以后，master分支将会拿到father dev push上来的关联id，这个id恰恰是child master的commit id。
