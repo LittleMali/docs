@@ -6,7 +6,7 @@
 Locale是指特定于某个国家或地区的一组设定，包括字符集，数字、货币、时间和日期的格式等。在Windows中，每个Locale可以用一个32位数字表示，记作LCID。
 通过语言设置，我们可以判断当前系统是中文环境还是英文环境。
 一种方法是获取LCID，进行判断。
-```
+``` c++
 // 获取系统Locale Id。
 LCID GetSystemDefaultLCID();
 
@@ -29,7 +29,7 @@ LCID GetSystemDefaultLCID();
 ```
 
 另外一个方法是直接获取语言集。
-```
+``` c++
 LANGID GetSystemDefaultLangID();
 LANGID GetUserDefaultLangID();
 
