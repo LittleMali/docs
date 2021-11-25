@@ -26,3 +26,18 @@ server  IN  A  127.0.0.1
 ```
 当对域名的并发请求过来时，服务器会按顺序轮流返回ip地址。这个算法的好处是实现简单、机会公平均等。缺点也比较明显，就是不同时刻的请求可能会获得不同的地址，这会对客户端基于ip地址的连接共享、缓存等造成影响。如果一个服务器ip结点宕机了，它的ip地址可能还会被返回使用。
 
+## Set Option选项
+### Dns相关选项
+* CURLOPT_IPRESOLVE
+  指定libcurl域名解析的方式，其值有：
+  * CURL_IPRESOLVE_WHATEVER：默认值，相当于PF_UNSPEC，支持IPv4/v6，具体以哪个优先需要看libc底层实现，Android中默认以IPv6优先，当IPv6栈无法使用时，libcurl会用IPv4。
+  * CURL_IPRESOLVE_V4：.仅请求A记录，即只解析为IPv4地址。
+  * CURL_IPRESOLVE_V6：.仅请求AAAA记录，即只解析为IPv6地址。
+  注意：该功能生效的前提是libcurl支持IPv6，需要在curl/lib/curl_config.h配置#define ENABLE_IPV6 1。
+
+* CURLOPT_DNS_CACHE_TIMEOUT
+  设置libcurl DNS缓存超时时间，默认为60秒，即每60秒清一次libcurl自身保存的DNS缓存。
+  如果设置为0，则不使用DNS缓存，设置为-1，则永远不清缓存。
+* CURLOPT_DNS_USE_GLOBAL_CACHE
+  让libcurl使用系统DNS缓存，默认情况下，libcurl使用本身的DNS缓存。
+  
