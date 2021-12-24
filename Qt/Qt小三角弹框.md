@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-12-24 09:58:36
- * @LastEditTime: 2021-12-24 15:10:01
+ * @LastEditTime: 2021-12-24 15:12:27
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: \docs\Qt\Qt小三角弹框.md
@@ -23,10 +23,15 @@
    * 画方框和三角，重点在于线条坐标的计算，所以，这里要区分清楚几个宽度。
   
     ![20211224142649](https://raw.githubusercontent.com/LittleMali/docs/master/mdPics/20211224142649.png)
+    
     WIDGET_WIDTH：黑框范围，包括阴影在内的size。
+    
     SHADOW_WIDTH：黑框和紫框之间的间距，当然，矩形的上部还要考虑三角的高度。
+    
     CONTENT_WIDTH：紫框范围，通常来说，设计稿中我们看到的就是这个区域。
+    
     CONTENT_PADDING：紫框和蓝框之间的间距，我们的控件不可能贴着紫框摆放，两者之间的间距就是padding。
+    
     弄清楚一个阴影窗口由那几部分组成，我们就可以知道怎么画边框线条了。
 
     ```c++
@@ -45,8 +50,9 @@
     trianglePolygon << QPoint(startX + TRIANGLE_WIDTH / 2, SHADOW_WIDTH); // 三角形顶点的坐标
     trianglePolygon << QPoint(startX + TRIANGLE_WIDTH, SHADOW_WIDTH + TRIANGLE_HEIGHT); // 三角形右点的坐标
     ```
-3. 失去焦点消失
+3. 失去焦点消失  
    点击“确定”btn，三角弹框出现。在窗口其他位置点击一下，弹框消失。这种实现类似PopUp wnd，所以，给窗口设置Popup属性即可：setWindowFlags(Qt::FramelessWindowHint | Qt::Popup)。如果我们不加popup，那么弹框将成为一个独立的窗口，我们在系统菜单栏可以看到两个窗口。
+   
    同时，想要实现阴影效果，还要设置*this->setAttribute(Qt::WA_TranslucentBackground);*，这个属性就没有仔细查了，网上copy过来直接用。
 4. 自动消失的另外一个做法是安装event filter。
    ```c++
@@ -77,7 +83,9 @@
    ```
    不过，安装filter的代码在本例子中并没有跑通，filter跟窗口的属性有关系。既然决定安装filter，我们就不需要Qt::Popup了，但是，为了避免出现两个窗口，我们尝试设置了Qt::Tool，很遗憾没有达到预期，虽然event事件是收到了，但是弹框没有消失。这里估计还是哪个细节没写好，可能跟TriangleWidget的父窗口有关系，父窗口parent和Qt::Tool估计有冲突。
 5. 弹框显示的位置
+   
    弹框怎么显示：QWidget::show。
+   
    弹框显示到哪里：全局坐标定位，pTriWidget->SetPos(x, y)传入的是global坐标，也就说，是相对显示屏的坐标，以显示屏左上角作为原点的坐标。
 
 ```c++
