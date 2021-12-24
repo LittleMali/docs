@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-12-24 09:58:36
- * @LastEditTime: 2021-12-24 15:03:54
+ * @LastEditTime: 2021-12-24 15:10:01
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: \docs\Qt\Qt小三角弹框.md
@@ -9,16 +9,19 @@
 
 # 小三角弹框
 我们想实现这么一个弹框，点击一个控件时弹出详细信息的三角弹框，当再点击其他位置时三角弹框自动关闭。
+
 ![20211224111440](https://raw.githubusercontent.com/LittleMali/docs/master/mdPics/20211224111440.png)
 
 关键技术点如下。
 1. 加阴影
    加阴影是利用Qt的*QGraphicsDropShadowEffect*功能，此设置会自动添加阴影，但是，此阴影只能添加到控件上，无法自动添加到窗口上，所以，这里要配合*paintEvent*来实现。
+
    ![20211224120728](https://raw.githubusercontent.com/LittleMali/docs/master/mdPics/20211224120728.png)
 2. 画边框和三角
    * 画边框是重写了Qt的 *paintEvent* 函数，使用QPainter自绘边框和三角形。
    painter.setBrush设置背景，此背景会填充窗口的背景，窗口里面的控件背景是不受影响的。这一点this->setStyleSheet设置的背景有差异，窗口如果设置了setStyleSheet，内部子控件会默认继承窗口的样式，从而影响到子控件的背景。
    * 画方框和三角，重点在于线条坐标的计算，所以，这里要区分清楚几个宽度。
+  
     ![20211224142649](https://raw.githubusercontent.com/LittleMali/docs/master/mdPics/20211224142649.png)
     WIDGET_WIDTH：黑框范围，包括阴影在内的size。
     SHADOW_WIDTH：黑框和紫框之间的间距，当然，矩形的上部还要考虑三角的高度。
