@@ -24,6 +24,64 @@ else (
 echo sum = !sum!
 ```
 
+## 参数解析
+### 简单的传参和解析参数
+严格限定传参格式，参数的顺序和值不可修改。假设脚本调用 sh test.sh p1 p2 。
+那么获取参数可以用 $1 , $2 。
+这种方式比较简单，在参数较多并且有参数可以省略的情况下，这个方式不好。
+```bash
+#!/bin/bash
+# sh test.sh p1 p2
+echo "param0:" $0 # test.sh
+echo "param1:" $1 # p1
+echo "param2:" $2 # p2
+echo "param3:" $3 # 空
+if [ "$3" != "" ]; then
+    echo $3
+else
+    echo "p3 is null"
+fi
+```
+### 合理的传参和解析参数
+利用*getopts*来解析参数，参数格式是 -u xx -d xxx 。
+* getopts语法。
+  getopts optstring name [args]
+* 参数 optstring。
+  1. 需要识别选项列表。说明哪些选项有效，以字母顺序列出。例如，字符串ht表示选项-h和-t有效。
+  2. 如果字符后面跟一个 :, 表示该选项期望有一个参数，与选项以空白字符分割。
+  3. ？ 和 ： 不能作为选项字符使用。
+* 参数 name。
+  一个变量，用来填充要处理的选项。
+* 参数 args。
+  是要处理的参数和选项的列表。如果未提供，则默认为提供给应用程序($@)的参数和选项。可以提供第三个参数，以使用getopts解析您提供的参数和选项的任何列表。
+
+```bash
+#!/bin/bash
+while getopts d:Dm:f:t: OPT
+do
+    case "${OPT}" 
+    in
+        d) DEL_DAYS=${OPTARG};;
+        D) DEL_ORIGINAL='yes';;
+        f) DIR_FROM="$OPTARG";;
+        m) MAILDIR_NAME="$OPTARG";;
+        t) DIR_TO="$OPTARG";;
+        ?) echo "unknown" ${OPTARG}
+    esac
+done
+  
+shift $(($OPTIND - 1))
+
+echo $DEL_DAYS
+echo $DEL_ORIGINAL
+echo $DIR_FROM
+```
+在上面的例子中，我们可以这么调脚本。
+sh bash_test.sh -d dd -D -m MM -f FF -t TT -x XX
+* 在 d 后面加“引号:” ，表示我们要求-d 传参。
+* 在 D 后面没有加“引号:”，表示我们仅仅需要-D即可，-D类似于开关选项true or false。
+* 我们希望解析的参数全面列在了optstring里面（d:Dm:f:t:），那么，我们在最后多传入了-x XX，getopts会报错 Illegal option -x ，但是参数解析还是可以正常完成。如果想要忽略这个错误，可以在 optstrings 最开头加上 引号（:d:Dm:f:t:），这是告诉getopts忽略未知的参数。
+
 ## 文件操作
 判断文件是否存在
 ```bash

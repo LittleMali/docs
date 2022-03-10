@@ -26,3 +26,30 @@ lable->setStyleSheet("color:red;");
 QLabel *lable = new QLabel("系统已就绪  ", this);
 lable->setStyleSheet("color: black;font-size:13px");
 ```
+
+## Qt设置文本换行
+```c++
+QLabel *lable = new QLabel(this);
+lable->setStyleSheet("color: black;font-size:13px");
+label->setFixedWidth(100);
+
+QFontMetrics fontPath(lable->font());
+// width * 2 表示最大可以显示两行。
+fontPath.elidedText("我是一个很长很长的文案", Qt::ElideRight, lable->width() * 2);
+label->setText(fontPath);
+```
+
+
+关于设置Qt::FramelessWindowHint的窗口，界面不能自主刷新的问题。
+问题：如果一个窗口设置了无边框Qt::FramelessWindowHint，则该窗口界面不会自动刷新。
+
+解决办法：重载showEvent,代码如下：
+
+void MyWidget::showEvent(QShowEvent *event)
+
+{
+this->setAttribute(Qt::WA_Mapped);
+QWidget::showEvent(event);
+}
+
+注：这个办法是从其他人的博客发现的，在此说明一下。

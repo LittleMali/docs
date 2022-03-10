@@ -84,3 +84,27 @@ source [file name]  # file name 指的是上面修改过的文件的file name
 env #打印所有的环境变量
 echo $PATH #打印PATH环境变量  
 ```
+
+## dmp
+### core dump是否开启
+ulimit -a
+查看core file size，若为0则表示没有开启。
+可以用过ulimit -c unlimited来设置。
+### 查询core dump的路径
+```bash
+# 方法1：
+$ cat /proc/sys/kernel/core_pattern
+
+方法2：
+$ /sbin/sysctl kernel.core_pattern
+```
+例如：cat /proc/sys/kernel/core_pattern 会输出如下：
+/tmp/core-%p-%e-%t
+* %e 程序文件名。
+* %p 所dump进程的pid。
+* %t core dump的时间 (由1970年1月1日计起的秒数)。
+* %u 所dump进程的实际用户ID。 
+* %g 所dump进程的实际组ID。
+* %s 导致本次core dump的信号。
+
+
