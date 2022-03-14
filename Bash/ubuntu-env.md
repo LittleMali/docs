@@ -88,8 +88,11 @@ echo $PATH #打印PATH环境变量
 ## dmp
 ### core dump是否开启
 ulimit -a
-查看core file size，若为0则表示没有开启。
-可以用过ulimit -c unlimited来设置。
+* 查看core file size，若为0则表示没有开启。
+* 可以用过ulimit -c unlimited来设置。
+* 上面的命令只对当前的终端环境生效，想要永久生效，可以修改 /etc/security/limits.conf 。增加一行。
+![20220311160604](https://raw.githubusercontent.com/LittleMali/docs/master/mdPics/20220311160604.png)
+
 ### 查询core dump的路径
 ```bash
 # 方法1：
