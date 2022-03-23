@@ -36,6 +36,23 @@ openssl官方没有提供二进制安装，需要自行下载源码编译安装�
   CA是第三方机构，是可信的。
   数字证书怎么获得呢，这个是系统预装的或者手动添加的。比如，微软的windows就预装了大量的数字证书，12306网站会要求我们手动下载并信任证书。
   
+* 自签证书
+  1. 生成ca私钥ca.key。
+   openssl genrsa -des3 -out ca.key 2048
+  2. 使用私钥自签根证书ca.crt。
+   openssl req -new -x509 -days 3650 -key ca.key -out ca.crt
+  3. 生成服务器私钥server.pem。
+   openssl genrsa -des3 -out server.pem 1024
+  4. 生成服务器 签发请求server.csr。
+   openssl rsa -in server.pem -out server.key
+  5. 使用根证书签发服务器证书server.crt。
+   openssl x509 -req -sha256 -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -days 3650 -out server.crt
+  6. 生成客户端私钥client.pem。
+   openssl genrsa -des3 -out client.pem 2048
+  7. 生成客户端 签发请求client.csr。
+   openssl req -new -key client.pem -out client-req.csr
+  8. 使用根证书签发客户端证书client.crt。
+   openssl x509 -req -sha256 -in client-req.csr -CA ca.crt -CAkey ca.key -CAcreateserial -days 3650 -out client.crt
 
 * 浏览器https访问网站
   1. qq.com准备注册网站了，它先自己创建了一对公私钥，私钥自己保存在服务器上，公钥和个人信息一起去CA请求签发证书。
