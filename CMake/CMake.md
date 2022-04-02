@@ -12,6 +12,12 @@ https://github.com/ttroy50/cmake-examples.git
 6. 链接依赖的lib： target_link_libraries(hello_world PRIVATE mylib)
 7. 
 
+## 设置预编译值
+* 推荐
+target_compile_definitions(cmake_examples_compile_flags PRIVATE EX3)
+* 不推荐
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DEX2" CACHE STRING "Set C++ Compiler Flags" FORCE)
+set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DEX2" CACHE STRING "Set C Compiler Flags" FORCE)
 ## Tip
 日志
 message("CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}.")

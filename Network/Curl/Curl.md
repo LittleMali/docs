@@ -1,4 +1,15 @@
 # curl
+
+## 源码
+https://github.com/curl/curl.git
+
+### win编译
+/curl/projects/下有各个版本的visual studio可以使用。
+```bash
+# 生成vs 2005工程
+generate.bat vc8
+```
+
 ## curl命令
 使用 --ipv4 或者 -4 强制使用ipv4协议。
 使用 --ipv6 或者 -6 强制使用ipv6协议。
