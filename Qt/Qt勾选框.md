@@ -11,3 +11,7 @@ checkBoxStyle.rect = QRect(option.rect.left() + 15, option.rect.top() + 5, 15, 1
 QCheckBox checkBox;
 QApplication::style()->drawPrimitive(QStyle::PE_IndicatorCheckBox, &checkBoxStyle, painter, &checkBox);
 ```
+
+PyQt5的QLabel，使用 .setStyleSheet('text-align: center;') 尝试文字居中，居然无效!!!
+
+可使用 .setAlignment(Qt.AlignCenter) 文字上下左右居中。

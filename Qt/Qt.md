@@ -8,6 +8,11 @@ zip适用于windows平台。
 tar.xz适用于linux平台。
 
 ### linux源码安装
+官方安装文档
+https://wiki.qt.io/Building_Qt_5_from_Git#Configuring_and_Building
+https://doc.qt.io/qt-5/configure-options.html
+
+
 ```bash
 # 文件已下载： qt-everywhere-src-5.12.12.tar.xz
 # 解压文件
@@ -18,12 +23,16 @@ tar -vxf qt-everywhere-src-5.12.12.tar
 # 具体参数可以看readme
 cd qt-everywhere-src-5.12.12
 ./configure
+
+# configure之后会提示缺少某些依赖包，需要安装一下
+
 make
 make install
+
+# 交叉编译配置参数
+./configure xplatform=linux-aarch64-gnu-g++
 ```
 
     
-PyQt5的QLabel，使用 .setStyleSheet('text-align: center;') 尝试文字居中，居然无效!!!
 
-可使用 .setAlignment(Qt.AlignCenter) 文字上下左右居中。
 
