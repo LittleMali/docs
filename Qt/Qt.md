@@ -8,9 +8,18 @@ zip适用于windows平台。
 tar.xz适用于linux平台。
 
 ### linux源码安装
-官方安装文档
+* 官方安装文档
 https://wiki.qt.io/Building_Qt_5_from_Git#Configuring_and_Building
+
+* qt configure参数说明
+https://blog.csdn.net/chenyong19870904/article/details/6712409
 https://doc.qt.io/qt-5/configure-options.html
+
+* qt支持xcb
+第三方程序依赖qt做ui，需要打包qt的lib。qt源码编译要支持xcb。
+./configure -qt-xcb
+添加 -qt-xcb 参数以后，configure可能还会报错，会提示缺少依赖。把文档里面的依赖全部装一遍。
+https://doc.qt.io/qt-5/linux-requirements.html
 
 
 ```bash
@@ -32,7 +41,3 @@ make install
 # 交叉编译配置参数
 ./configure xplatform=linux-aarch64-gnu-g++
 ```
-
-    
-
-
