@@ -16,9 +16,15 @@ https://download.qt.io/archive/qt/
 zip适用于windows平台。  
 tar.xz适用于linux平台。  
 
+## 安装环境
+* 宿主机器：x86_64架构的Ubuntu 18.04。
+* 目标版本：x86_64架构和aarch64架构的Qt5.12.8。
+  我们希望的Qt版本有两套，一套是x64架构，一套是aarch64架构。  
+  对于x86/x64架构的版本，在宿主环境直接编译即可。  
+  对于aarch64架构的版本，是要在宿主环境交叉编译Qt。  
 ### linux源码安装
 * 官方安装文档
-https://wiki.qt.io/Building_Qt_5_from_Git#Configuring_and_Building
+https://wiki.qt.io/Building_Qt_5_from_Git
 
 * qt configure参数说明
 https://blog.csdn.net/chenyong19870904/article/details/6712409
