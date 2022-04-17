@@ -3,7 +3,7 @@
 本文介绍Qt源码安装。
 
 ## 源码下载
-* *推荐*通过git下载源码。  
+* *推荐* 通过git下载源码。  
 ```bash
 git clone -b v5.12.8 https://github.com/qt/qt5.git
 git submodule update --init --recursive
@@ -12,7 +12,7 @@ git submodule update --init --recursive
 * 直接下载官方源码安装包。  
 https://download.qt.io/archive/qt/
 
-例如，若选择某个版本（https://download.qt.io/archive/qt/5.12/5.12.12/single/），则下载对应的zip或者tar.xz格式文件。  
+例如，若选择某个版本（ https://download.qt.io/archive/qt/5.12/5.12.12/single/ ），则下载对应的zip或者tar.xz格式文件。  
 zip适用于windows平台。  
 tar.xz适用于linux平台。  
 
