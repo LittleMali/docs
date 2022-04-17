@@ -139,75 +139,96 @@ the previous build.
    这一步之后，可以在前面指定的prefix底下看到全部的qt文件。  
   
 ## aarch64下安装Qt
+  aarch64架构的qt编译，如果不涉及交叉编译，那么编译过程跟上面是完全一样的，也就是说若宿主机器是arm架构linux系统，那么，安装的依赖包也全部是arm的二进制，编译qt的时候加载的依赖也都是arm架构的，最后生成的二进制也是arm的。  
+  如果是要在x86架构的linux系统中，去构建arm架构的包，这就是交叉编译。交叉编译arm版本的qt，这里涉及了较多依赖，比较无解，先后尝试了以下思路。  
+  说明，之后的流程都是x86_64架构下的交叉编译。  
+  宿主机器：x86_64的Ubuntu 18.04。  
+  目标：交叉编译aarch64架构的Qt。
 
-* qt交叉编译
-http://www.wayln.com/?p=648
-  交叉编译是 在x86平台下编译arm平台的包。
-
-* 安装交叉编译工具
-  sudo apt-get install gcc-aarch64-linux-gnu
-  sudo apt-get install g++-aarch64-linux-gnu
+1. 安装依赖包（基础包和xcb依赖）。
+2. 安装交叉编译器。
+  `sudo apt-get install gcc-aarch64-linux-gnu`
+  `sudo apt-get install g++-aarch64-linux-gnu`
   安装完成以后，查看是否正常。
-  aarch64-linux-gnu-gcc -v
-  aarch64-linux-gnu-g++ -v
+  `aarch64-linux-gnu-gcc -v`
+  `aarch64-linux-gnu-g++ -v`
 
-  官方下载
-  http://releases.linaro.org/components/toolchain/binaries/latest-7/aarch64-linux-gnu/
+  交叉编译器源码官方下载  
+  http://releases.linaro.org/components/toolchain/binaries/latest-7/aarch64-linux-gnu/  
+  下载解压，并将bin路径添加到环境变量。  
+  `export PATH="/download_aarch64_linux_gnu_dir/bin":$PATH`
 
-* qt支持xcb
-第三方程序依赖qt做ui，需要打包qt的lib。qt源码编译要支持xcb。
-./configure -qt-xcb
-添加 -qt-xcb 参数以后，configure可能还会报错，会提示缺少依赖。把文档里面的依赖全部装一遍。
-https://doc.qt.io/qt-5/linux-requirements.html
+3. 下载源码。
+4. 配置configure。
+   ```bash
+   configure \
+    -prefix /data/output \
+    -opensource -confirm-license \
+    -release \
+    -shared \
+    -c++std c++14 \
+    -nomake tests -nomake examples -no-opengl \
+    -skip qt3d -skip qtcanvas3d -skip qtdatavis3d  \
+    -rpath \
+    -xkbcommon -eventfd \
+    -pkg-config \
+    -qpa xcb -qt-xcb \
+    -xplatform linux-aarch64-gnu-g++
+    2>&1|tee build.log
+   ```
+  参数 xplatform linux-aarch64-gnu-g++ 指明交叉编译，并使用 linux-aarch64-gnu-g++ 作为交叉编译器。参考 xplatform 的用法，在 /qt-everywhere-src-5.12.8/qtbase/mkspec里面有 xplatform 参数的定义，其中 linux-aarch64-gnu-g++ 是我们所需要的。  
+  在 /qt-everywhere-src-5.12.8/qtbase/mkspec/qmake.conf 里面声明了交叉编译要使用的编译器。  
 
-apt-get install libxcb-xinerama0-dev
-sudo apt-get install '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev
-
-
-```bash
-# 文件已下载： qt-everywhere-src-5.12.12.tar.xz
-# 解压文件
-xz -d qt-everywhere-src-5.12.12.tar.xz
-tar vxf qt-everywhere-src-5.12.12.tar
-
-# 配置 & 编译
-# 具体参数可以看readme
-cd qt-everywhere-src-5.12.12
-./configure
-
-# configure之后会提示缺少某些依赖包，需要安装一下
-
-make
-make install
-
-# 交叉编译配置参数
-./configure xplatform=linux-aarch64-gnu-g++
+5. configure失败。  
+  configure会失败，报的错误如下。失败的原因主要是xcb依赖找不到。这是因为我们在宿主环境安装的依赖全部是x86架构的，但是在编译arm架构qt时，qt要加载的是arm架构的依赖。qt试图在宿主环境中去寻找arm架构的依赖包，这肯定是不行的。
 ```
+ERROR: Feature 'pkg-config' was enabled, but the pre-condition 'tests.pkg-config' failed.
+ERROR: Feature 'xkbcommon' was enabled, but the pre-condition 'libs.xkbcommon' failed.
+ERROR: Feature 'xcb' was enabled, but the pre-condition 'features.thread && features.xkbcommon && libs.xcb' failed.
+```
+6. 指定sysroot。  
+  查阅网上其他教程，编译arm版本的qt文章虽然有，但是其宿主机器实际是arm架构的Ubuntu，例如 [Ubuntu安装QT5.13.2交叉编译环境以及程序运行](http://www.wayln.com/?p=648)、[Ubuntu18.04实现Aarch64和arm32的交叉编译全步骤(Qt5.12.10源码编译)](https://blog.csdn.net/ZLOZL/article/details/117702955)。这篇文章configure能够成功，并且xcb也是全部正常，但是它的环境跟我们需求的不一致，无法使用。  
+  网上树莓派的交叉编译环境中有提到sysroot，例如[交叉编译并部署QT5.12.4到树莓派](https://www.freesion.com/article/99811071925/)。  
+  `-sysroot /aarch64/usr/`可以指定sysroot，sysroot的意思是 在交叉编译qt的时候，源码所加载的依赖包，不要在当前宿主系统路径下寻找，而是要是sysroot指定的路径下寻找。这也就是说，指定的sysroot里面要放一份完整的aarch64 Ubuntu的库和二进制。  
+  那么，我们的问题来了，去哪里弄到一份可用的aarch64架构Ubuntu sysroot呢？答案是不知道。在树莓派的交叉的，树莓派有提供一份py脚本，可以完成sysroot文件拉取。我们自己想要aarch64 Ubuntu目前来看是无解了。  
+  本人尝试过将aarch64 Ubuntu的/usr/bin， /usr/lib, /usr/local/ 等路径全部拷贝一份作为交叉编译的sysroot，但是configure失败了。  
+  `ERROR: Cannot compile a minimal program. The toolchain or QMakeSpec is broken.`
+7. 源码编译xcb依赖。  
+  我们指定sysroot是为了解决交叉编译中arm架构依赖的问题，这里缺失的主要是xcb的依赖包，那么，我们可以尝试手动编译arm架构的xcb依赖包。参考的几个文档如下。  
+  [CentOS7 环境下交叉编译（银河麒麟）](https://blog.csdn.net/lijing_sun/article/details/111285515)  
+  [【ARM开发】交叉编译Qt源码之（1）编译xcb](https://blog.csdn.net/console_log/article/details/122826798)  
+  [【ARM开发】交叉编译Qt源码之（4）添加xcb支持](https://blog.csdn.net/console_log/article/details/122881398)  
+  [xcb官方源码](https://www.x.org/releases/individual/xcb/)  
+  几篇文章的关键是下载源码，使用交叉编译器编译，再将生成的二进制拷贝到交叉编译器的lib目录下。只是，这种方法的依赖嵌套太多，一个lib会依赖另一个lib，就像套娃一样，工作量太大。
 
-apt-get install -y \
-libfontconfig1-dev \
-libfreetype6-dev \
-libx11-dev \
-libx11-xcb-dev \
-libxext-dev \
-libxfixes-dev \
-libxi-dev \
-libxrender-dev \
-libxcb1-dev \
-libxcb-glx0-dev \
-libxcb-keysyms1-dev \
-libxcb-image0-dev \
-libxcb-shm0-dev \
-libxcb-icccm4-dev \
-libxcb-sync-dev \
-libxcb-xfixes0-dev \
-libxcb-shape0-dev \
-libxcb-randr0-dev \
-libxcb-render-util0-dev \
-libxcb-xinerama0-dev \
-libxkbcommon-dev \
-libxkbcommon-x11-dev 
+## Qt编译
+  在x86环境下尝试交叉编译arm版本qt，困难不少，前面的尝试耗时数天却没什么进展。  
+  我们再回溯一下交叉编译qt的目的——生成某个安装包xxx.deb。
+* xxx.deb是要支持多平台多架构的。
+* xxx.deb制作安装包需要使用qt，xxx软件是使用qt做界面的。
+* xxx.deb安装包的制作环境是x64 Ubuntu，我们希望在一个Ubuntu机器上打包出多平台多架构的包。因此，我们引入了交叉编译的概念 -- 更准确的说，需要交叉编译的是xxx.deb而不是qt。
+* 我们需要aarch64架构的qt libs以便xxx使用，用于ui显示。那么，我们能够直接拿到aarch64架构的qt libs是不是就可以了？ -- 我们可以在arm机器Ubuntu系统上直接编译一份带xcb的Qt libs。
 
-
-ubuntu arm64
-https://cdimage.ubuntu.com/netboot/18.04/?_ga=2.144972276.1373732785.1649764940-131919995.1640782375
+  准确的说，我们的全流程应该是从qt开始，到xxx.deb生成。
+1. aarch64架构的Ubuntu系统，安装依赖包，下载qt源码，编译带xcb插件的qt，拷贝qt二进制（qt全部文件）。
+2. x86_64架构的Ubuntu系统，使用新版本的aarch64 qt。
+3. 编译制作xxx.deb。  
+  编译xxx.deb的时候会失败，失败的原因是qt moc头文件的无法识别。经查，我们制作deb的时候，使用的qt moc是qt/bin底下的二进制。在我们使用了自己编译的qt二进制以后，我们实际使用的了aarch64版本的qt moc文件。在x86架构下运行arm架构的moc二进制，这肯定会失败。  
+  因此，我们可以试试，使用X86_64架构编译出来的qt/bin底下的二进制，用于qt moc头文件，在打包阶段我们把aarch64版本的qt libs打进安装包。  
+  
+  因此，我们的全流程应该是：
+1. x86_64架构的Ubuntu系统，使用交叉编译器`-xplatform linux-aarch64-gnu-g++`编译不带xcb版本的x64 qt。我们的目的仅仅是需要qt/bin下的二进制，用于qmake，qt moc等。
+2. aarch64架构的Ubuntu系统，使用交叉编译器`-xplatform linux-aarch64-gnu-g++ -xkbcommon -qpa xcb -qt-xcb`编译aarch64 qt。我们的目的是需要qt/底下的其他文件（剔除掉bin）。
+3. x86_64架构的Ubuntu，xxx.deb的编译环境，准备新版本的qt。  
+  qt/bin -- x86_64架构的qt/bin。  
+  qt/lib等 -- aarch64架构的qt/lib等。
+4. 编译xxx.deb。
+  这一步我们依旧会失败，这里失败的原因是找不到lib。在编译xxx.deb的过程中，我们要加载arm架构的lib。因为我们缺少sysroot，所以，可以尝试手动把aarch64 Ubuntu的lib拷贝过来，放到qt/lib底下，这样qt在加载libs时就能在当前路径下找到依赖。  
+  这里会缺不少libs，要逐个拷贝。
+```
+/opt/gcc-linaro-5.5.0-2017.10-x86_64_aarch64-linux-gnu/bin/../lib/gcc/aarch64-linux-gnu/5.5.0/../../../../aarch64-linux-gnu/bin/ld: warning: libnss3.so, needed by /opt/qt_arm-5.12.8/lib/libQt5WebEngineCore.so.
+5.12.8, not found (try using -rpath or -rpath-link)
+/opt/gcc-linaro-5.5.0-2017.10-x86_64_aarch64-linux-gnu/bin/../lib/gcc/aarch64-linux-gnu/5.5.0/../../../../aarch64-linux-gnu/bin/ld: warning: libnssutil3.so, needed by /opt/qt_arm-5.12.8/lib/libQt5WebEngineCore
+.so.5.12.8, not found (try using -rpath or -rpath-link)
+```
+5. 安装运行xxx.deb，确认qt是否正常。

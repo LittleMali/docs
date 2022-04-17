@@ -1,12 +1,3 @@
-<!--
- * @Author: your name
- * @Date: 2021-12-24 09:58:36
- * @LastEditTime: 2021-12-24 15:13:34
- * @LastEditors: Please set LastEditors
- * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- * @FilePath: \docs\Qt\Qt小三角弹框.md
--->
-
 # 小三角弹框
 我们想实现这么一个弹框，点击一个控件时弹出详细信息的三角弹框，当再点击其他位置时三角弹框自动关闭。
 

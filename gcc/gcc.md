@@ -1,16 +1,16 @@
 # gcc
 
-gcc官网
+gcc官网  
 https://gcc.gnu.org/
 
-git源码
+git源码  
 https://gcc.gnu.org/git.html
 
-下载
+下载  
 https://gcc.gnu.org/releases.html
 https://gcc.gnu.org/install/download.html
 
-清华大学镜像源
+清华大学镜像源  
 https://mirrors.tuna.tsinghua.edu.cn/gnu/gcc/gcc-5.1.0/gcc-5.1.0.tar.gz
 
 镜像源的url可以直接修改版本号，下载对应的版本。
