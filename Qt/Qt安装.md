@@ -32,7 +32,7 @@ git submodule update --init --recursive
 
 ## x86/x64 linux源码安装
   x86/x64环境下的安装比较简单，重点是弄清楚configure参数。详细的安装步骤参见官方文档。这里只列几个重要说明。  
-1. 安装基础依赖包。
+1. 安装基础依赖包。  
    `sudo apt-get qt5-default`  
    `sudo apt-get install libxcb-xinerama0-dev`  
    `sudo apt-get install build-essential perl python git`  
@@ -130,14 +130,15 @@ Qt will be installed into '/opt/qt-5.12.10-linux-aarch64'.
 Prior to reconfiguration, make sure you remove any leftovers from
 the previous build.
 ```
-6. 编译make。
+6. 编译make。  
    `lscpu`  
    `sudo make -jN`  
    make -jN，N表示cpu核数，多核编译，加快编译速度。笔记本一般耗时2h起步。
-7. 安装make install。
+7. 安装make install。  
    `sudo make install`  
    这一步之后，可以在前面指定的prefix底下看到全部的qt文件。  
   
+## aarch64下安装Qt
 
 * qt交叉编译
 http://www.wayln.com/?p=648
