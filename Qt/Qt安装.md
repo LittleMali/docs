@@ -33,17 +33,17 @@ git submodule update --init --recursive
 ## x86/x64 linux源码安装
   x86/x64环境下的安装比较简单，重点是弄清楚configure参数。详细的安装步骤参见官方文档。这里只列几个重要说明。  
 1. 安装基础依赖包。
-   `sudo apt-get qt5-default`
-   `sudo apt-get install libxcb-xinerama0-dev`
-   `sudo apt-get install build-essential perl python git`
+   `sudo apt-get qt5-default`  
+   `sudo apt-get install libxcb-xinerama0-dev`  
+   `sudo apt-get install build-essential perl python git`  
 2. 安装xcb依赖包。  
-   `sudo apt-get install libxcb-xinerama0-dev `
-   `sudo apt-get install '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev`
+   `sudo apt-get install libxcb-xinerama0-dev `  
+   `sudo apt-get install '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev`  
    因为ubuntu版本差异，某些依赖包的名字可能有变化，注意搜索一下对应的名字。
 3. 安装WebEngine依赖包。  
    `apt-get install libssl-dev libxcursor-dev libxcomposite-dev libxdamage-dev libxrandr-dev libdbus-1-dev libfontconfig1-dev libcap-dev libxtst-dev libpulse-dev libudev-dev libpci-dev libnss3-dev libasound2-dev libxss-dev libegl1-mesa-dev gperf bison`
 4. 下载qt源码。  
-   `git clone -b v5.12.8 https://github.com/qt/qt5.git`
+   `git clone -b v5.12.8 https://github.com/qt/qt5.git`  
    `git submodule update --init --recursive`
 5. configure。  
    ```bash
@@ -70,7 +70,7 @@ git submodule update --init --recursive
   * rpath：支持相对路径，Qt优先在当前路径加载依赖的lib。
   * -xkbcommon：支持xcb。
   * -qpa xcb：Qt Platform Abstraction，qt支持跨平台开发的插件（libQt5XcbQpa.so）。支持这个参数才会生成so。
-  * -qt-xcb：支持跨平台，会生成libxcb.so。
+  * -qt-xcb：支持跨平台，会生成libxcb.so。  
   qt configure阶段会检查大量的环境依赖，我们重点关注的是qpa和xcb相关的检查。若configure成功，则会提示继续下一步make。  
 ```
 Features used by QPA backends:
@@ -131,12 +131,12 @@ Prior to reconfiguration, make sure you remove any leftovers from
 the previous build.
 ```
 6. 编译make。
-   `lscpu`
-   `sudo make -jN`
+   `lscpu`  
+   `sudo make -jN`  
    make -jN，N表示cpu核数，多核编译，加快编译速度。笔记本一般耗时2h起步。
 7. 安装make install。
-   `sudo make install`
-   这一步之后，可以在前面指定的prefix底下看到全部的qt文件。
+   `sudo make install`  
+   这一步之后，可以在前面指定的prefix底下看到全部的qt文件。  
   
 
 * qt交叉编译
