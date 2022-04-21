@@ -21,20 +21,6 @@ Features: AsynchDNS HSTS IPv6 Largefile NTLM Unicode UnixSockets alt-svc
   https://curl.se/libcurl/c/CURLOPT_SSL_CIPHER_LIST.html
   curl文档中就提到了ssl协议的几种不同实现方式。
 
-## 源码
-https://github.com/curl/curl.git
-
-### win编译
-/curl/projects/下有各个版本的visual studio可以使用。
-```bash
-# 生成vs 2005工程
-generate.bat vc8
-```
-
-## curl命令
-使用 --ipv4 或者 -4 强制使用ipv4协议。  
-使用 --ipv6 或者 -6 强制使用ipv6协议。
-
 ## ipv4和ipv6选择
 cURL 对ipv4、ipv6是这样一个处理过程：
 1. 解析被请求的域名，通常会获得一个ip地址列表，同时包含了ipv4和ipv6地址;
