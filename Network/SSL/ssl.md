@@ -10,18 +10,18 @@ openssl官方没有提供二进制安装，需要自行下载源码编译安装�
 * win安装
   win安装完以后要记得添加环境变量。
 ## 密钥，签名，证书
-* 密钥
-  使用对称加密，非对称加密等算法协商出来的公钥和私钥，用于对数据加解密。
-  对称加密算法：ECB，CBC，CFB等。
-  非对称加密算法：RSA、DSA、DH和ECC。
+* 密钥  
+  使用对称加密，非对称加密等算法协商出来的公钥和私钥，用于对数据加解密。  
+  对称加密算法：ECB，CBC，CFB等。  
+  非对称加密算法：RSA、DSA、DH和ECC。  
   对称加密加密解密使用的是相同的密钥，而非对称加密加密解密时使用的不同的密钥，分为公钥（public key）和私钥(private key)。公钥可以公开，而私钥自己保存。由于非对称加密的密钥生成麻烦，所以无法做到一次一密，而且其加密速度很慢，无法对大量数据加密。因此最常用的使用场景就是数字签名和密码传输，用作数字签名时使用私钥加密，公钥解密；用作加密解密时，使用公钥加密，私钥解密。
 
-* 数字签名
+* 数字签名  
   使用摘要算法计算出来的一个hash值，此hash值成为**摘要**。摘要算法是将任意长度的内容计算为一个固定长度的hash，例如MD5和SHA1。摘要算法是不可逆的，我们不可以从hash结果逆推回原文，因此，摘要算法可以用于验证数据完整性，校验数据是否被篡改。
   1. 服务端将要发给客户端的原始数据，先进行hash，得到内容的摘要，然后，服务器使用自己的私钥对hash进行加密，生成**数字签名**。
   2. 服务器再用自己的私钥对原文进行加密，然后把加密后的数据和数字签名一起发给客户端。
   3. 客户端收到数据后，取出数字签名，使用服务器对应的公钥对签名解密，得到原文的摘要。由于公私钥是匹配的，客户端的公钥能够解开数据，就证明此数据确实是服务端发送的。
-  4. 客户端再对原文进行解密，然后，对原文进行hash，得到摘要，将摘要与上一步的摘要进行对比，如果两者一致，就证明原文未被篡改。
+  4. 客户端再对原文进行解密，然后，对原文进行hash，得到摘要，将摘要与上一步的摘要进行对比，如果两者一致，就证明原文未被篡改。  
   上面这些操作，涉及非对称加密和摘要计算，整个过程的计算是十分耗时的，通常不用来传输数据。这套数据交互的流程，一般用户交换密码——对称加密的密码，后续数据的传输，改为使用对称加密。
   客户端是怎么拿到服务器对应的公钥呢，这就涉及数字证书了。
 
@@ -31,28 +31,28 @@ openssl官方没有提供二进制安装，需要自行下载源码编译安装�
   1. 当某一方要传输数据时，实际需要携带 密文+数字签名+数字证书。
   2. 对方收到数据后，首先提取数字证书，并使用CA的公钥对证书进行解密，拿到证书里面的个人信息和公钥。
   3. 再使用证书里面的公钥对数字签名进行解密，得到hash。
-  4. 再使用证书里面的公钥对密文进行解密，得到原文并计算hash，与上一步的hash进行比对。
-  在数据交换的过程中，服务器要用自己的私钥对数据进行加密再发送给客户端，同样的，客户端也要拿自己的私钥对数据进行加密，再发送给服务器。加密是双方都需要做的事。
-  CA是第三方机构，是可信的。
+  4. 再使用证书里面的公钥对密文进行解密，得到原文并计算hash，与上一步的hash进行比对。  
+  在数据交换的过程中，服务器要用自己的私钥对数据进行加密再发送给客户端，同样的，客户端也要拿自己的私钥对数据进行加密，再发送给服务器。加密是双方都需要做的事。  
+  CA是第三方机构，是可信的。  
   数字证书怎么获得呢，这个是系统预装的或者手动添加的。比如，微软的windows就预装了大量的数字证书，12306网站会要求我们手动下载并信任证书。
   
 * 自签证书
-  1. 生成ca私钥ca.key。
-   openssl genrsa -des3 -out ca.key 2048
-  2. 使用私钥自签根证书ca.crt。
-   openssl req -new -x509 -days 3650 -key ca.key -out ca.crt
-  3. 生成服务器私钥server.pem。
-   openssl genrsa -des3 -out server.pem 1024
-  4. 生成服务器 签发请求server.csr。
-   openssl rsa -in server.pem -out server.key
-  5. 使用根证书签发服务器证书server.crt。
-   openssl x509 -req -sha256 -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -days 3650 -out server.crt
-  6. 生成客户端私钥client.pem。
-   openssl genrsa -des3 -out client.pem 2048
-  7. 生成客户端 签发请求client.csr。
-   openssl req -new -key client.pem -out client-req.csr
-  8. 使用根证书签发客户端证书client.crt。
-   openssl x509 -req -sha256 -in client-req.csr -CA ca.crt -CAkey ca.key -CAcreateserial -days 3650 -out client.crt
+  1. 生成ca私钥ca.key。  
+   `openssl genrsa -des3 -out ca.key 2048`
+  2. 使用私钥自签根证书ca.crt。  
+   `openssl req -new -x509 -days 3650 -key ca.key -out ca.crt`
+  3. 生成服务器私钥server.pem。  
+   `openssl genrsa -des3 -out server.pem 1024`
+  4. 生成服务器 签发请求server.csr。  
+   `openssl rsa -in server.pem -out server.key`
+  5. 使用根证书签发服务器证书server.crt。  
+   `openssl x509 -req -sha256 -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -days 3650 -out server.crt`
+  6. 生成客户端私钥client.pem。  
+   `openssl genrsa -des3 -out client.pem 2048`
+  7. 生成客户端 签发请求client.csr。  
+   `openssl req -new -key client.pem -out client-req.csr`
+  8. 使用根证书签发客户端证书client.crt。  
+   `openssl x509 -req -sha256 -in client-req.csr -CA ca.crt -CAkey ca.key -CAcreateserial -days 3650 -out client.crt`
 
 * 浏览器https访问网站
   1. qq.com准备注册网站了，它先自己创建了一对公私钥，私钥自己保存在服务器上，公钥和个人信息一起去CA请求签发证书。

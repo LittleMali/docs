@@ -16,4 +16,11 @@
 * 安装指定的版本  
   `apt-get install <package-name>=version`
 
+* 查看包依赖  
+  查看curl依赖哪些包。  
+  `apt-cache depends curl`
+
+* 查看包的说明
+  `apt-cache show libcurl3`
+
   

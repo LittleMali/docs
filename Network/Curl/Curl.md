@@ -1,5 +1,26 @@
 # curl
 
+## curl是什么
+* curl是一个shell进程，是命令工具，支持各种网络协议，例如，http，file，ftp，pop3，smtp等等。  
+* libcurl是一个共享库，供第三方进程加载使用各种网络协议。
+
+## curl和openssl
+* curl是一个网络工具，支持各种网络协议。  
+* openssl是加解密、签名/验签工具集合。
+* 在手动编译curl的时候，要注意是否依赖openssl，以便支持https。
+```
+# 编译curl的时候没有依赖openssl，所以，curl不支持https。
+curl.exe --version
+curl 7.82.0-DEV (i386-pc-win32) libcurl/7.82.0-DEV
+Release-Date: [unreleased]
+Protocols: dict file ftp gopher http imap ldap ldaps mqtt pop3 rtsp smb smtp telnet tftp
+Features: AsynchDNS HSTS IPv6 Largefile NTLM Unicode UnixSockets alt-svc
+```
+* openssl是ssl协议实现的一个开源工具，除了openssl，还有NSS，WolfSSL，BearSSL等实现方式。
+* 对于curl，可以使用 curl_easy_setopt - CURLOPT_SSL_CIPHER_LIST 来设置ssl加密套件。  
+  https://curl.se/libcurl/c/CURLOPT_SSL_CIPHER_LIST.html
+  curl文档中就提到了ssl协议的几种不同实现方式。
+
 ## 源码
 https://github.com/curl/curl.git
 
@@ -11,7 +32,7 @@ generate.bat vc8
 ```
 
 ## curl命令
-使用 --ipv4 或者 -4 强制使用ipv4协议。
+使用 --ipv4 或者 -4 强制使用ipv4协议。  
 使用 --ipv6 或者 -6 强制使用ipv6协议。
 
 ## ipv4和ipv6选择
