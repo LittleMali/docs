@@ -1,19 +1,19 @@
 # curl编译
 
-源码
+源码  
 https://github.com/curl/curl.git
 
 ## 编译
 1. git 拉取代码。
 2. 切换到某个tag。
 
-### win编译- no openssl
+### win编译 - no openssl
   win环境下，使用Visual Studio编译比较方便。
 1. 在 curl\projects\目录下，README文档记录了编译方法。
 2. 在 curl\projects\目录下，generate.bat 配置使用哪个版本的vs。
 3. 例如，进入 curl\projects\Windows\VC10 ，打开 curl-all.sln ，编译curl和libcurl。
 
-编译选项：
+编译选项：  
 DLL：生成libcurl.dll，第三方程序可以集成dll使用。  
 LIB：生成静态libcurl.lib，第三方程序静态链接lib使用。
 
@@ -49,7 +49,7 @@ Features: AsynchDNS HSTS Largefile NTLM UnixSockets alt-svc
     |        |_<configuration>
 ```
 3. 在 curl\projects\目录下， build-openssl.bat 脚本会先编译 openssl。  
-这个脚本在内部会定位openssl的源码，在bat目录下，上跳两级寻找openssl目录。
+这个脚本在内部会定位openssl的源码，在当前脚本目录下，上跳两级寻找openssl目录。
 4. build-openssl.bat 依赖 Perl，windows要先安装Perl。
 5. 调用 build-openssl.bat 编译openssl，耗时大约十来分钟。  
 `build-openssl.bat vc8 x86 release`
