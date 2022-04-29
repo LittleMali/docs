@@ -4,6 +4,15 @@
 openssl的地址： https://www.openssl.org/
 openssl中文： https://www.openssl.net.cn/
 
+## ssl协议版本
+SSL 1.0  
+SSL 2.0  
+SSL 3.0  
+TLS 1.0  
+TLS 1.1  
+TLS 1.2
+SSL 1.0 --> TSL 1.2逐渐更新，TLS 1.2是近期的标准、  
+
 ## 安装
 openssl官方没有提供二进制安装，需要自行下载源码编译安装。可以使用第三方编译好的文件，这样比较简单： http://slproweb.com/products/Win32OpenSSL.html 。
 
