@@ -1,8 +1,8 @@
 
 # submodule
-git submodule的核心点是父子仓库的关联，关联了一个commit id。
-假设父仓库father，里面有子仓库child，父子仓库都有master和dev两条代码线。目录结构如下所示。
---father
+git submodule的核心点是父子仓库的关联，关联了一个commit id。  
+假设父仓库father，里面有子仓库child，父子仓库都有master和dev两条代码线。目录结构如下所示。  
+--father  
 &nbsp;&nbsp;--child
 ## submodule merge
 两条分支master和dev，dev如何合入到master中去呢？
