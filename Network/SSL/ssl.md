@@ -77,6 +77,41 @@ openssl官方没有提供二进制安装，需要自行下载源码编译安装�
   10. 随后，双方使用对称密钥对数据进行加密和数据交互。
   11. 大概的流程是这个样子，具体的细节可以通过wireshark抓包分析。
   12. 这只是一个单向认证的例子，也就是浏览器认证了服务端的证书，反过来，服务器也可以主动要去浏览器提供证书，服务器要主动辨识客户端的身份。
-   
 
+https握手流程。   
 ![20220505163755](https://raw.githubusercontent.com/LittleMali/docs/master/mdPics/20220505163755.png)
+
+## 证书格式
+  我们常见的证书有很多种类型，cer，crt，key，pem等，它们之期的关系是什么？  
+
+* X.509  
+  X.509 是证书标准，X.509证书的核心是根据RFC 5280进行编码和/或数字签名的数字文档。该标准规定了两种编码方式，一个是PEM编码，一个是DER编码。通常来讲采用PEM编码就使用.pem作为文件扩展名，采用DER编码就使用.der作为文件扩展名。除了这两种常见的编码方式以外，还有.crt、.cer、.p12等。
+  * PEM编码：本质是base64编码。  
+  `openssl x509 -in certificate.pem -text -noout`
+  * DER编码：采用字节流编码。
+  `openssl x509 -in certificate.der -inform der -text -noout`
+
+  我们下面介绍证书文件扩展名。
+* .pem  
+  采用PEM编码格式的 X.509标准的证书文件扩展名。
+* 再谈.pem  
+  PEM文件可能包含任何内容，包括公钥，私钥或两者，因为PEM文件不是标准文件。实际上，PEM只意味着该文件包含base64编码的数据位。  
+  通常，PEM文件包含base64编码的密钥或证书，其中包含-----BEGIN \<whatever\>-----和-----END \<whatever\>----形式的页眉和页脚行。随着时间的推移，<whatever>已经发展出许多可能性，包括私钥，公钥，X509证书，PKCS7数据，包含多个证书的文件，包含私钥和X509证书的文件，PKCS＃10证书签名请求等等。  
+  在 \<openssl src\>/crypto/pem/pem.h 中定义了openss可以解码的列表，例如下面的两个示例。  
+  `#define PEM_STRING_RSA "RSA PRIVATE KEY"`  
+  `#define PEM_STRING_X509 "CERTIFICATE"`  
+  再提一句，通常一个pem文件中只包含一个类型内容，但是，我们可以手动把额外的BEGIN-END内容拷贝到某个pem文件中，这样，一个pem就会包含多个内容。
+* .der  
+  采用DER编码格式的 X.509标准的证书文件扩展名。
+* .crt  
+  证书certificate的缩写，可以是PEM或者DER编码，常见于UNIX系统，在unix下一般多使用PEM编码。
+* .cer  
+  证书certificate的缩写，可以是PEM或者DER编码，常见于Windows系统，在Windows下一般多使用DER编码。
+* .p12/.pfx  
+  全称：PKCS #12，是公钥加密标准（Public Key Cryptography Standards，PKCS）系列的一种，可以将包含了公钥的X.509证书和证书对应的私钥以及其他相关信息打包为一个整体。简单理解：一份.p12文件 =  X.509证书 + 私钥。  
+  对 unix 服务器来说,一般 CRT 和 KEY 是分开存放在不同文件中的，但 Windows 的 IIS 则将它们存在一个 PFX 文件中。PFX 通常会有一个“提取密码”，你想把里面的东西读取出来的话，它就要求你提供提取密码。
+* .csr  
+  全称Certificate Signing Request，即证书签名请求，它并不是证书的格式，而是用于向权威证书颁发机构（Certificate Authority, CA）获得签名证书的申请，其核心内容包含一个 RSA公钥和其他附带信息。  
+  例如，某个公司向权威CA申请证书时，该公司会先生成一对公私钥，再把公钥和公司信息写入csr，拿着csr去CA签发证书。
+* .key  
+  通常用来存放一个 RSA 公钥或者私钥，它并非 X.509 证书格式，编码同样可能是 PEM，也可能是 DER。
