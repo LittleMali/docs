@@ -26,9 +26,9 @@ Addresses:  240e:ff:d800:500:3::3fa
           14.215.57.232
 Aliases:  www.taobao.com
 ```
-使用type参数来指定解析的ip类型。
-A Record：Address record，是一组32位ipv4地址
-AAAA Record：ipv6 address record，是一组128位ipv6地址
+使用type参数来指定解析的ip类型。  
+A Record：Address record，是一组32位ipv4地址。  
+AAAA Record：ipv6 address record，是一组128位ipv6地址。  
 ```shell
 C:\Users\Administrator>nslookup -type=A www.taobao.com
 服务器:  gm-heiji.tencent.com

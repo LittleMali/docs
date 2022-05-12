@@ -29,3 +29,5 @@ if (of.is_open())
     of.close();
 }
 ```
+## printf  
+`printf("%zu", vector.size())`
