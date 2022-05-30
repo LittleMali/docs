@@ -4,6 +4,39 @@ git submodule的核心点是父子仓库的关联，关联了一个commit id。
 假设父仓库father，里面有子仓库child，父子仓库都有master和dev两条代码线。目录结构如下所示。  
 --father  
 &nbsp;&nbsp;--child
+
+## submodule使用
+* 添加submodule  
+  在父仓库中使用 `git submodule add Git_URL child_dir`
+* 父仓库的时候同步拉取子仓库  
+  `git clone Git_URL --recurse-submodules`
+* 单独拉取子仓库  
+  `git submodule update --init --recursive`
+* 查看子仓库的状态  
+  在父仓库中使用 `git submodule status --recursive`
+* 限定子仓库版本
+  1. 父仓库通常是关联到子仓库的某个tag而不是branch，因为tag一般表示某个稳定版本，比branch更合适。所以，submodule在设计的时候，父子仓库之间通过commit id来关联，也就是说当我们把子仓库拉下来以后，子仓库是处于“no branch”状态的。即使我们在子仓库中切换了分支git checkout master这样的命令，父仓库也不会记录分支的关联性，父仓库只会记录当前master的commit id。
+  2. 由于父子之间关联的是commit id，那么，当我们要更新submodule时，比如官方更新了一个新版本，那么，我们可以这么做。
+  ```
+  cd child
+  git pull # 这一步能看到子仓库的变动，被拉到了本地
+  git checkout curl-7_83_1 # 切换到curl的7.83.1版本
+
+  cd ../
+  git submodule status
+    +462196e6b4a47f924293a0e26b8e9c23d37ac26f child (curl-7_83_1)
+
+  # 子仓库已经发生了变动，注意前面的+号。
+
+  #提交修改
+  git commit -m "update curl"
+  git push
+  ```
+  3. 当同事更新了submodule，我要怎么获取到同事的修改呢？  
+  父仓库 `git pull`  
+  父仓库 `git submodule update child`，这里是显示的限定了只更新child子仓库。如果父仓库关联了多个子仓库，想一次性更新全部的子仓库，直接用`git submodule update`。
+
+
 ## submodule merge
 两条分支master和dev，dev如何合入到master中去呢？
 * 通常来说master是受保护的，我们没有权限将代码push上去.

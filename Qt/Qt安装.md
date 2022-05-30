@@ -146,11 +146,11 @@ the previous build.
   目标：交叉编译aarch64架构的Qt。
 
 1. 安装依赖包（基础包和xcb依赖）。
-2. 安装交叉编译器。
-  `sudo apt-get install gcc-aarch64-linux-gnu`
-  `sudo apt-get install g++-aarch64-linux-gnu`
-  安装完成以后，查看是否正常。
-  `aarch64-linux-gnu-gcc -v`
+2. 安装交叉编译器。  
+  `sudo apt-get install gcc-aarch64-linux-gnu`  
+  `sudo apt-get install g++-aarch64-linux-gnu`  
+  安装完成以后，查看是否正常。  
+  `aarch64-linux-gnu-gcc -v`  
   `aarch64-linux-gnu-g++ -v`
 
   交叉编译器源码官方下载  
@@ -217,7 +217,7 @@ ERROR: Feature 'xcb' was enabled, but the pre-condition 'features.thread && feat
   因此，我们可以试试，使用X86_64架构编译出来的qt/bin底下的二进制，用于qt moc头文件，在打包阶段我们把aarch64版本的qt libs打进安装包。  
   
   因此，我们的全流程应该是：
-1. x86_64架构的Ubuntu系统，使用交叉编译器`-xplatform linux-aarch64-gnu-g++`编译不带xcb版本的x64 qt。我们的目的仅仅是需要qt/bin下的二进制，用于qmake，qt moc等。
+1. x86_64架构的Ubuntu系统，编译x64版本的qt。我们的目的仅仅是需要qt/bin下的二进制，用于qmake，qt moc等。
 2. aarch64架构的Ubuntu系统，使用交叉编译器`-xplatform linux-aarch64-gnu-g++ -xkbcommon -qpa xcb -qt-xcb`编译aarch64 qt。我们的目的是需要qt/底下的其他文件（剔除掉bin）。
 3. x86_64架构的Ubuntu，xxx.deb的编译环境，准备新版本的qt。  
   qt/bin -- x86_64架构的qt/bin。  
