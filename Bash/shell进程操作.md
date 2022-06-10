@@ -1,5 +1,9 @@
 # shell命令
 
+## 进程信息
+* 查看进程列表  
+`ps -aux | grep qq`  
+![20220608144829](https://raw.githubusercontent.com/LittleMali/docs/master/mdPics/20220608144829.png)
 ## 小技巧
 
 ### gdb attach pid

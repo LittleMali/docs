@@ -75,4 +75,14 @@ $ /sbin/sysctl kernel.core_pattern
 * %g 所dump进程的实际组ID。
 * %s 导致本次core dump的信号。
 
+### 配置core-dump
+```
+echo "kernel.core_pattern = /tmp/core-%p-%e-%t">>/etc/sysctl.conf
+echo "kernel.core_uses_pid = 1">>/etc/sysctl.conf
+echo "fs.suid_dumpable = 2">>/etc/sysctl.conf
+sysctl -p
+echo "DefaultLimitCORE=infinity">>/etc/systemd/system.conf
+
+systemctl daemon-reexec
+```
 

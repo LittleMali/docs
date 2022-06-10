@@ -48,15 +48,20 @@ Features: AsynchDNS HSTS Largefile NTLM UnixSockets alt-svc
     |      |_VC <version>
     |        |_<configuration>
 ```
-3. 在 curl\projects\目录下， build-openssl.bat 脚本会先编译 openssl。  
-这个脚本在内部会定位openssl的源码，在当前脚本目录下，上跳两级寻找openssl目录。
-4. build-openssl.bat 依赖 Perl，windows要先安装Perl。
-5. 调用 build-openssl.bat 编译openssl，耗时大约十来分钟。  
-`build-openssl.bat vc8 x86 release`
+3. 在 curl\projects\目录下build-openssl.bat可以编译openssl lib，但是脚本依赖 Perl，windows要先安装Perl。 
+4. 调用 build-openssl.bat 编译openssl，耗时大约十来分钟。  
+```
+# 按照默认的目录结构编译openssl
+build-openssl.bat vc8 x86 release
+
+# 可以指定openssl的目录
+build-openssl.bat vc8 x86 release D:\git\openssl
+```
+
 ![20220421171009](https://raw.githubusercontent.com/LittleMali/docs/master/mdPics/20220421171009.png)
-6. 在 openssl\build\Win64\VC8\LIB Release 下可以看到生成了openssl.exe、libcrypto.lib、libssl.lib和include文件。
-7. 回到 curl\projects\目录下，generate.bat 配置生成vs环境。
-8. vs选择 编译选项 LIB Release - LIB OpenSSL ，意思是静态链接 release版本的openssl lib，生成 静态libcurl.lib，同时也会生成curl.exe。此curl.exe是静态链接了 openssl 生成的lib。  
+5. 在 openssl\build\Win64\VC8\LIB Release 下可以看到生成了openssl.exe、libcrypto.lib、libssl.lib和include文件。
+6. 回到 curl\projects\目录下，generate.bat 配置生成vs环境。
+7. vs选择 编译选项 LIB Release - LIB OpenSSL ，意思是静态链接 release版本的openssl lib，生成 静态libcurl.lib，同时也会生成curl.exe。此curl.exe是静态链接了 openssl 生成的lib。  
 我们可以看到 curl 支持了https协议。
 ```
 \curl\build\Win32\VC8\LIB Release - LIB OpenSSL>curl.exe --version

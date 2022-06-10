@@ -12,6 +12,10 @@ netstat -p tcp -a -b
 netstat -ano | findstr 8080
 ```
 
+* 查看路由表  
+`netstat -r`  
+`route -n`
+
 * nslookup域名解析
 ``` shell
 C:\Users\Administrator>nslookup www.taobao.com
