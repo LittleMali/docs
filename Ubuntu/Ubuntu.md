@@ -10,3 +10,7 @@
 ## 安装
 U盘安装的时候，制作镜像，选择MBR+BIOS还是GPT+UEFI ？  
 插入U盘，电脑开机启动，进入bios设置，看看是否带UEFI 。
+
+## Ubuntu18 屏幕放大2倍
+`gsettings set org.gnome.desktop.interface scaling-factor 2`
+`gsettings set org.gnome.mutter experimental-features "['scale-monitor-framebuffer']"`
