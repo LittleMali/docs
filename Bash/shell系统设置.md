@@ -1,4 +1,7 @@
 # shell命令
+
+## root密码重置
+`sudo passwd`
 ## 添加环境变量
 安装完qtcreator后，shell识别不了qmake命令，我们需要把qmake添加到系统环境变量。
 1. 修改/etc/enviroment文件

@@ -33,12 +33,37 @@ MimeType=MimeType=text/html
 sudo chmod a+x myApp.desktop
 
 # 自测发现，ubuntu 18 此命令可以，ubuntu 20下，这个命令无效。
-gio set myApp.desktop "metadata::trusted" yes
+gio set myApp.desktop metadata::trusted yes
+# 网上有说ubuntu 20下用这个命令，直接执行此命令没有效果，要注销/重启之后生效。
+gio set myapp.desktop metadata::trusted true
 
 # cmd以后还要刷新一下桌面才会生效。
 sudo apt install xautomation
+# 这个刷新好像不起效果，先记录一下吧。
 xte 'key F5'
+
+dbus-launch gio set myapp.desktop metadata::trusted yes
 ```
+再说一下上面的命令行，可以跟下面的注意比对起来看。
+1. root和user权限隔离，.desktop文件是user权限的，那么在user下调用gio set是可以的。但是，如果切换到root下去gio set，那么对快捷方式是无效的。
+``` shell
+# 环境： ubuntu 18
+
+# 进入root
+su -
+
+# 这么设置并刷新桌面，是无效的，因为当前处于root。
+gio set firefox.desktop metadata::trusted yes
+
+# 尝试以user环境执行？传入的是全路径。
+su - little -c "gio set /home/little/Desktop/firefox.desktop metadata::trusted yes"
+# 提示 gio: Setting attribute metadata::trusted not supported。
+# 这是因为root是non-GUI session的。
+
+# 网上查到了，可以以dbus-launch方式来运行。
+su - little -c "dbus-launch gio set /home/little/Desktop/firefox.desktop metadata::trusted yes"
+```
+
 
 注意，以下几点。
 * You have to run this command with the same user as the owner of the desktop files
