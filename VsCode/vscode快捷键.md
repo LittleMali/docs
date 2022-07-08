@@ -13,3 +13,6 @@ mac： Cmd+Opt+U
 ## md图片保存在本地
 插件： Markdown Image。  
 快捷键：右键 -- Paste Image。
+
+## 光标多选
+按住Alt，鼠标逐行点击

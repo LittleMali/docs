@@ -7,3 +7,17 @@
 2. 画思维导图  
    插件：vscode-mindmap  
    使用：新建一个 .km 类型的文件。  
+
+3. web相关
+   * CSS Peek
+   * ESLint
+   * HTML Snippets
+   * JS-CSS-HTML Formatter
+   * open in browser
+   * Vetur
+   * vue
+   * Vue 3 Snippets
+   * Webpack
+
+
+

@@ -9,7 +9,18 @@
 方法2：`sc query`
 
 * 查看驱动程序  
-  `sc query type=driver`
+  `sc query type=driver | findstr "xxx"`
+  `sc query xxx`
+
+* 删除驱动
+  `sc delete xxx`
+
+* 安装驱动
+  `sc create twpcap type=kernel binpath="C:\xxx.sys"`
+
+* 启动服务
+  `sc start xxx`
+
 
 * sc命令  
 SC 是用来与服务控制管理器和服务进行通信的命令行程序。下面仅列举了查询相关的参数。
