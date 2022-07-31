@@ -2,6 +2,7 @@
 
 ## 教程
 https://github.com/ttroy50/cmake-examples.git
+https://cmake.org/cmake/help/latest/guide/tutorial/index.html
 
 ## 学习
 1. 设置cmake版本：cmake_minimum_required(VERSION 3.5)
