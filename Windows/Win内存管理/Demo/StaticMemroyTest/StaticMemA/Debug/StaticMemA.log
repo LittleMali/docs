@@ -1,0 +1,9 @@
+﻿Build started 2022/8/9 20:23:21.
+     1>Project "D:\github\StaticMemroyTest\StaticMemA\StaticMemA.vcxproj" on node 2 (clean target(s)).
+     1>_PrepareForClean:
+         Deleting file "Debug\StaticMemA.lastbuildstate".
+     1>Done Building Project "D:\github\StaticMemroyTest\StaticMemA\StaticMemA.vcxproj" (clean target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.01
