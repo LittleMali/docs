@@ -2,12 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 
 project(LittleCMakeDemo)
 
-# set default options
-option(BUILD_SRC "build src code" ON)
-option(BUILD_COMMON_LIB "build common libs" ON)
-option(BUILD_3RD "build 3rd dependencies" OFF)
-
-#################### 平台相关信息 start ####################
+#-------------------- 平台相关信息 begin --------------------
 # CMake modules
 # 添加平台/处理器架构预定义
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMake/Modules")
@@ -33,5 +28,17 @@ else()
     add_definitions(-D_BIT32)
 endif()
 
-#################### 平台相关信息 end ####################
+# -------------------- 平台相关信息 end --------------------
 
+# -------------------- 源码 Src begin --------------------
+
+# set default options
+option(BUILD_SRC "build src code" ON)
+option(BUILD_COMMON_LIB "build common libs" ON)
+option(BUILD_3RD "build 3rd dependencies" OFF)
+
+if (BUILD_SRC)
+    add_subdirectory(Src)
+endif()
+
+# -------------------- 源码 Src end --------------------
