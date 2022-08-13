@@ -1,1 +1,6 @@
 CMakeFiles
+build
+
+.vscode
+
+*.drawio

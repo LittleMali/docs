@@ -1,3 +1,4 @@
+# 系统/平台信息定义，用于CMake脚本判断。
 
 # 系统定义
 # PLATFORM_SYSTEM Linux-2.26
