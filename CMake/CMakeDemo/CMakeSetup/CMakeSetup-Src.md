@@ -1,9 +1,22 @@
-# CMake Src
-前面Setup-0里面介绍了项目的初始目录结构，并且添加了项目总的cmake配置。  
-接下来，我们在Src下开始添加工程文件。
+# CMake 编写源码
+## 源码
+源码主要是我们的工程代码和第三库，工程代码又可以分为业务代码和公共组件，公共组件一旦开发完成一般较少修改，我们放在Common中，业务代码我们放在Src中。
+```
+# 目录结构
+CMakeDemo
+|_ build
+|_ CMake
+|_ Common
+|_ Src
+|_ CMakeLists.txt
+|_ .gitignore
+```
+* Common：公共组件目录，跨组跨部门合作时，公共文件可以放这里。
+* Src：具体的业务逻辑，存在二进制。
 
+这里我们举几个例子，然后挨个来实现。
 ## Src-业务代码
-```CMake
+```
 # 目录结构
 CMakeDemo
 |_ build
@@ -24,6 +37,8 @@ CMakeDemo
 ## 编译Src
 我们看一下项目的CMake配置。
 ```cmake
+# CMakeLists.txt
+
 # set default options
 option(BUILD_SRC "build src code" ON)
 
@@ -31,7 +46,6 @@ if (BUILD_SRC)
     add_subdirectory(Src)
 endif()
 ```
-
 
 ## 添加MainUI工程
 ### Src的代码配置
@@ -113,5 +127,4 @@ i am network service.
 
 ## 下一步
 我们已经生成了二进制文件，接下来我们既可以继续添加动态库，第三方库等，也可以先跑通全流程。  
-这里，我们先跑通全流程，接下来，我们继续看，如何制作一个安装包出来，我们希望安装以后能够得到生成的MainUI和NetworkService两个文件。  
-下一步，打包流程[打包](./CMakeSetup-Package.md)。
+这里，我们先跑通全流程，接下来，我们编写一个打包脚本，通过脚本可以编译出工程二进制文件，并且，能制作成安装包。[编译打包](./CMakeSetup-Build.md)。
