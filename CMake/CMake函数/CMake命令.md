@@ -2,7 +2,7 @@
 
 ## win下使用cmake
 1. 下载并安装：https://cmake.org/download/
-2. 进入工程目录，创建build目录。
+2. 进入工程目录，mkdir build。
 3. cd build
 4. cmake ..
 5. cmake --build .
@@ -16,3 +16,9 @@
 * -A：架构名称。
 * -D：使用该变量以向cmake传入各种参数。包括选项及覆盖cmake提供的各种默认变量值。
 * --build：使用cmake直接调用编译器编译项目。
+
+## linux下使用cmake
+1. mkdir build
+2. cd build
+3. cmake ..
+4. make
