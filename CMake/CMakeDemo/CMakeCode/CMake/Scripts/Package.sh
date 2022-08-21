@@ -23,6 +23,8 @@ run_pack() {
 
 main() {
     info "package enter"
+
+    info "workspace: ${WORKSPACE}"
     
     info "shell scripts formating ..."
     format_shell_script ${WORKSPACE}

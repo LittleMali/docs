@@ -95,6 +95,23 @@ $ make # 编译工程
 `cmake [<选项>] -S <源路径> -B <构建路径>`  
 指定的路径可以是绝对路径，也可以是相对路径当前工作目录。源路径必须包含一个CMakeLists.txt文件。构建路径如果不存在，则会自动创建目录。
 
+方法2是cmake保持旧版本兼容所保留的一种方法，如果方法2不可行，可以试试方法1。
+```bash
+#方法1
+if [[ ! -d $BUILD_DIR ]]; then
+    info "build dir does NOT exists, make build dir: $BUILD_DIR"
+    mkdir -p $BUILD_DIR
+fi
+
+cd ${BUILD_DIR}
+cmake ..
+cd ${WORKSPACE}
+
+# 方法2
+cmake -B${BUILD_DIR} # 注意-B之后是没有空格的。
+
+```
+
 reconfigure其实就是删除cmake的几个缓存文件。
 ```bash
 configure() {
