@@ -1,8 +1,9 @@
 #!/bin/bash
 
 WORKSPACE=$(cd `dirname $0`; cd ../../; pwd)  # 代码根目录，等价于git仓库目录
-BUILD_DIR=${WORKSPACE} # 代码根目录，项目根CMakeLists的位置。
-BUILD_SYMBOL_DIR=$BUILD_DIR/pdb
+BUILD_DIR=${WORKSPACE}/build # 代码根目录，项目根CMakeLists的位置。
+BUILD_TEMP_DIR=${WORKSPACE}/build
+BUILD_SYMBOL_DIR=$WORKSPACE/pdb
 
 #CPU_COUNT=$(cat /proc/cpuinfo | grep "processor" | wc -l)
 CPU_COUNT=4
@@ -123,7 +124,7 @@ configure() {
     info "\t-DPKG_VERSION=$PKG_VERSION"
 
     info "start cmake configure..."
-
+    
     cmake -DBUILD_SRC=$BUILD_SRC_OPTION \
         -DBUILD_COMMON=$BUILD_COMMON_OPTION \
         -DBULD_THIRD_PARTY=$BUILD_THIRD_PARTY_OPTION \
