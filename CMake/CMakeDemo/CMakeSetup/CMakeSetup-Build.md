@@ -21,7 +21,7 @@ CMakeDemo
 
 ### 编译指令
 使用cmake编译工程项目，本质就是调用一下命令行。  
-configure：`cmake`  
+configure：`cmake ..`  
 build：`cmake --build slnRootDir --config release --taget all -j 4`
 * --build：指定项目根目录，项目根CMakeLists.txt所在的目录。
 * --config：编译方式，debug/release/RelWithDebInfo。
@@ -88,6 +88,13 @@ $ cd build
 $ cmake .. # 在缓存目录下configure项目
 $ make # 编译工程
 ```
+
+我们手动cmake的时候，是在build目录下调用了`cmake ..`，这会在build目录下生成cmake cache。但是，使用脚本要如何指定build缓存目录呢？  
+一种方法是不要设置，在工程的根目录下直接`cmake`，那么会在当前目录下寻找CMakeLists文件并开始配置工程。  
+另一种方法是使用 -B 参数。  
+`cmake [<选项>] -S <源路径> -B <构建路径>`  
+指定的路径可以是绝对路径，也可以是相对路径当前工作目录。源路径必须包含一个CMakeLists.txt文件。构建路径如果不存在，则会自动创建目录。
+
 reconfigure其实就是删除cmake的几个缓存文件。
 ```bash
 configure() {

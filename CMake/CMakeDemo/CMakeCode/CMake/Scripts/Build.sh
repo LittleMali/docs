@@ -129,7 +129,8 @@ configure() {
         -DBUILD_COMMON=$BUILD_COMMON_OPTION \
         -DBULD_THIRD_PARTY=$BUILD_THIRD_PARTY_OPTION \
         -DBUILD_CONFIG=$BUILD_CONFIG \
-        -DPKG_VERSION=$PKG_VERSION
+        -DPKG_VERSION=$PKG_VERSION \
+        -B"$BUILD_DIR"
 
     if [[ $? -ne 0 ]]; then
         error "run cmake configure failed"
