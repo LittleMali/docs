@@ -62,6 +62,7 @@ class RequestHandlerImpl(http.server.BaseHTTPRequestHandler):
         self.end_headers()
 
         # 3. 发送响应内容（此处流不需要关闭）
+        print("response body: " + rsp_body + "\n")
         self.wfile.write((rsp_body + "\n").encode("utf-8"))
 
 
