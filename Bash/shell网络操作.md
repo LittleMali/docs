@@ -1,7 +1,7 @@
 # shell命令
 
 ## 网络相关
-* netstat查看网络状态，比如是否监听了某个端口。
+### 端口状态
 ```shell
 -p: 协议。
 -a：all，所有连接和监听的端口。
@@ -12,11 +12,11 @@ netstat -p tcp -a -b
 netstat -ano | findstr 8080
 ```
 
-* 查看路由表  
+### 路由表  
 `netstat -r`  
 `route -n`
 
-* nslookup域名解析
+### 域名解析
 ``` shell
 C:\Users\Administrator>nslookup www.taobao.com
 服务器:  gm-heiji.tencent.com
@@ -56,3 +56,6 @@ Addresses:  240e:ff:d800:500:3::3fa
           240e:ff:d800:500:3::3f9
 Aliases:  www.taobao.com
 ```
+
+### host文件
+Linux下本地域名解析文件`/etc/resolv.conf`
