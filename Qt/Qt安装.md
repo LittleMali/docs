@@ -24,6 +24,7 @@ git submodule update --init --recursive
   对于aarch64架构的版本，是要在宿主环境交叉编译Qt。  
 * 官方安装文档  
   https://wiki.qt.io/Building_Qt_5_from_Git  
+  https://wiki.qt.io/QtWebEngine/How_to_Try  
 * qt configure参数说明  
   https://doc.qt.io/qt-5/configure-options.html
   https://blog.csdn.net/chenyong19870904/article/details/6712409
