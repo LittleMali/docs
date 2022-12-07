@@ -54,3 +54,6 @@ sc queryex group= ""    - 枚举不在组内的活动服务
 sc query type= interact - 枚举所有不活动服务
 sc query type= driver group= NDIS     - 枚举所有 NDIS 驱动程序
 ```
+
+* 驱动运行状态
+`driverquery /V > c:\driver.txt`
