@@ -78,6 +78,16 @@ $ /sbin/sysctl kernel.core_pattern
 * %g 所dump进程的实际组ID。
 * %s 导致本次core dump的信号。
 
+### core dump位置
+在有的linux系统下，查看core dmp的结果如下，这是系统使用了systemd-coredump来生成dmp文件。
+```
+$cat /proc/sys/kernel/core_pattern
+|/lib/systemd/systemd-coredump %P %u %g %s %t 9223372036854775808 %h %e
+```
+systemd-coredump默认生成的路径是`/usr/lib/systemd/systemd-coredump`，默认是LZ4压缩存放的。
+我们利用coredumpctl命令可解压。
+
+
 ### 配置core-dump
 ```
 echo "kernel.core_pattern = /tmp/core-%p-%e-%t">>/etc/sysctl.conf
