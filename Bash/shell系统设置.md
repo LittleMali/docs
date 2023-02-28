@@ -87,6 +87,11 @@ $cat /proc/sys/kernel/core_pattern
 systemd-coredump默认生成的路径是`/usr/lib/systemd/systemd-coredump`，默认是LZ4压缩存放的。
 我们利用coredumpctl命令可解压。
 
+如何解压lz4格式的文件？  
+`coredumpctl -o myexe.dmp dump 1234`  
+-o输出文件到哪里。  
+dump后面是pid，pid是发生crash的那个进程，pid可以在lz4的文件名中看到。
+
 
 ### 配置core-dump
 ```
