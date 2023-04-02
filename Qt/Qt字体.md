@@ -39,17 +39,16 @@ fontPath.elidedText("我是一个很长很长的文案", Qt::ElideRight, lable->
 label->setText(fontPath);
 ```
 
-
+## Tips
 关于设置Qt::FramelessWindowHint的窗口，界面不能自主刷新的问题。
 问题：如果一个窗口设置了无边框Qt::FramelessWindowHint，则该窗口界面不会自动刷新。
 
 解决办法：重载showEvent,代码如下：
-
+```c++
 void MyWidget::showEvent(QShowEvent *event)
-
 {
 this->setAttribute(Qt::WA_Mapped);
 QWidget::showEvent(event);
 }
-
+```
 注：这个办法是从其他人的博客发现的，在此说明一下。
