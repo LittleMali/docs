@@ -29,7 +29,7 @@ $ /sbin/sysctl kernel.core_pattern
 $cat /proc/sys/kernel/core_pattern
 |/lib/systemd/systemd-coredump %P %u %g %s %t 9223372036854775808 %h %e
 ```
-systemd-coredump默认生成的路径是`/usr/lib/systemd/coredump`，默认是LZ4压缩存放的。
+systemd-coredump默认生成的路径是`/var/lib/systemd/coredump`，默认是LZ4压缩存放的。
 我们利用coredumpctl命令可解压。
 
 如何解压lz4格式的文件？  

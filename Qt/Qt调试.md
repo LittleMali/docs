@@ -13,7 +13,10 @@
   2. --disalbelogging：关闭日志。
   3. --log-level=0/1/2/3：日志等级，从低到高，0是全部打印。
   4. --single-process: 单进程模式。
+  5. --enable-logging：还可以设置日志输出位置。
  `export QTWEBENGINE_CHROMIUM_FLAGS="--enable-logging --log-level=0 --disable-gpu"`
+ `export QTWEBENGINE_CHROMIUM_FLAGS="--enable-logging=stderr --log-level=0 --disable-gpu"`
+ `export QTWEBENGINE_CHROMIUM_FLAGS="--enable-logging=~/webengine.log --log-level=0 --disable-gpu"`
  
  ## WebEngine调试
  * 远程调试，类似F12  
