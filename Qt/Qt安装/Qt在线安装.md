@@ -1,7 +1,7 @@
 # Qt在线安装
 
 Qt5.14之后不提供安装包了，提供的是在线安装。  
-下载链接：https://mirrors.cloud.tencent.com/qt  
+下载链接：https://download.qt.io/official_releases/online_installers/  
 
 ![picture 1](../images/244bf394bf2724c67b62863d9df1a1372a96ab8cae81f5904532361dda2a2223.png)  
 
