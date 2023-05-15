@@ -13,4 +13,4 @@
 4. 两次进行比对，看内存差异。
 
 gflag标记如下：
-![picture 1](../../images/6f26c343ea37d515b7d2d94ba749c294eb67b14fd812c8141741d69993ce254c.png)  
+![picture 1](../images/6f26c343ea37d515b7d2d94ba749c294eb67b14fd812c8141741d69993ce254c.png)  
