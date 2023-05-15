@@ -35,19 +35,9 @@ Switched to Guest (WoW) mode
 01 020ef010 779ceaba     00000000 00000000 020ef1f4 ntdll_77980000!RtlpWaitOnCriticalSection+0x13e (FPO: [Non-Fpo])
 02 020ef038 763cc44d     00299ebc 00299e98 020ef178 ntdll_77980000!RtlEnterCriticalSection+0x150 (FPO: [Non-Fpo])
 03 020ef048 763cc6e5     00299ebc 8d596491 766eaf98 shell32!kfapi::CCriticalSectionLock::CCriticalSectionLock+0x14 (FPO: [Non-Fpo])
-04 020ef178 763a357c     020ef1f4 020ef1b4 8d5967d9 shell32!kfapi::CFolderDefinitionCache::Load+0x2c (FPO: [Non-Fpo])
-05 020ef230 763a4b3f     020ef428 20008000 00299e98 shell32!kfapi::CFolderPathResolver::GetPath+0x96 (FPO: [Non-Fpo])
-06 020ef300 763ccc92     020ef428 00000000 20008000 shell32!kfapi::CFolderCache::GetPath+0x23d (FPO: [Non-Fpo])
-07 020ef3b4 763ccbce     020ef428 20008000 00000000 shell32!kfapi::CKFFacade::GetFolderPath+0xd5 (FPO: [Non-Fpo])
-08 020ef3dc 763a568d     020ef428 20008000 00000000 shell32!SHGetKnownFolderPath_Internal+0x96 (FPO: [Non-Fpo])
-09 020ef3f8 763a57cc     020ef428 00000000 00000000 shell32!SHGetFolderPathEx+0x30 (FPO: [Non-Fpo])
-0a 020ef43c 64eabbbe     00000000 00008023 00000000 shell32!SHGetFolderPathW+0x114 (FPO: [Non-Fpo])
-0b 020ef68c 64e6cc06     8c59e9c6 65149d30 65168b40 TxSTGuard!QMGetSpecialDirectory_+0x50 (FPO: [Non-Fpo]) 
 
-10 020ef938 64f64f64     00000000 8c59e612 00000000 TxSTGuard!_cinit+0x66 (FPO: [Non-Fpo]) (CONV: cdecl) [f:\dd\vctools\crt_bld\self_x86\crt\src\crt0dat.c @ 288] 
-11 020ef96c 64f650aa     64e40000 00000001 00000000 TxSTGuard!_CRT_INIT+0x77 (FPO: [Non-Fpo]) (CONV: stdcall) [f:\dd\vctools\crt_bld\self_x86\crt\src\dllcrt0.c @ 132] 
-12 020ef9ac 64f65165     64e40000 020ef9d8 779b9264 TxSTGuard!__DllMainCRTStartup+0x59 (FPO: [Non-Fpo]) (CONV: cdecl) [f:\dd\vctools\crt_bld\self_x86\crt\src\dllcrt0.c @ 324] 
-13 020ef9b8 779b9264     64e40000 00000001 00000000 TxSTGuard!_DllMainCRTStartup+0x1e (FPO: [Non-Fpo]) (CONV: stdcall) [f:\dd\vctools\crt_bld\self_x86\crt\src\dllcrt0.c @ 293] 
+07 020ef3b4 763ccbce     020ef428 20008000 00000000 shell32!kfapi::CKFFacade::GetFolderPath+0xd5 (FPO: [Non-Fpo])
+
 14 020ef9d8 779bfe97     64f65147 64e40000 00000001 ntdll_77980000!LdrpCallInitRoutine+0x14
 15 020efacc 779bea4e     00000000 75aa9f5c 020efc70 ntdll_77980000!LdrpRunInitializeRoutines+0x26f (FPO: [Non-Fpo])
 16 020efc40 779fd3df     020efcb0 020efc70 00000000 ntdll_77980000!LdrpLoadDll+0x472 (FPO: [Non-Fpo])
@@ -116,10 +106,10 @@ OwningThread Stack =
 	020ef3dc 763a568d     020ef428 20008000 00000000 shell32!SHGetKnownFolderPath_Internal+0x96 (FPO: [Non-Fpo])
 	020ef3f8 763a57cc     020ef428 00000000 00000000 shell32!SHGetFolderPathEx+0x30 (FPO: [Non-Fpo])
 
-	020ef938 64f64f64     00000000 8c59e612 00000000 TxSTGuard!_cinit+0x66 (FPO: [Non-Fpo]) (CONV: cdecl)
-	020ef96c 64f650aa     64e40000 00000001 00000000 TxSTGuard!_CRT_INIT+0x77 (FPO: [Non-Fpo]) (CONV: stdcall)
-	020ef9ac 64f65165     64e40000 020ef9d8 779b9264 TxSTGuard!__DllMainCRTStartup+0x59 (FPO: [Non-Fpo]) (CONV: cdecl)
-	020ef9b8 779b9264     64e40000 00000001 00000000 TxSTGuard!_DllMainCRTStartup+0x1e (FPO: [Non-Fpo]) (CONV: stdcall)
+	020ef938 64f64f64     00000000 8c59e612 00000000 XXXXXXXX!_cinit+0x66 (FPO: [Non-Fpo]) (CONV: cdecl)
+	020ef96c 64f650aa     64e40000 00000001 00000000 XXXXXXXX!_CRT_INIT+0x77 (FPO: [Non-Fpo]) (CONV: stdcall)
+	020ef9ac 64f65165     64e40000 020ef9d8 779b9264 XXXXXXXX!__DllMainCRTStartup+0x59 (FPO: [Non-Fpo]) (CONV: cdecl)
+	020ef9b8 779b9264     64e40000 00000001 00000000 XXXXXXXX!_DllMainCRTStartup+0x1e (FPO: [Non-Fpo]) (CONV: stdcall)
 ```
 8. 查看第二个临界区信息。
    这是3号线程的函数栈，DllMain里面调用了shell32 api，进入了临界区并等待，试图获取地址为[77a820c0]的锁。
