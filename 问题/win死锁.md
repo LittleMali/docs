@@ -27,7 +27,7 @@ Switched to Guest (WoW) mode
 3. 看一下线程。  
    总共只有5个线程，并不多。  
    能看到有LoadLibrary，也能看到DllMain里面调用了shell接口。例如下面这个1号线程。那么，可能是load dll的时候死锁了。
-```shell
+```
 0:000:x86> ~*kvn
    1  Id: aa0.548 Suspend: -1 Teb: 7efd8000 Unfrozen
  # ChildEBP RetAddr      Args to Child              
@@ -53,7 +53,7 @@ Switched to Guest (WoW) mode
 4. 确认下我们的猜测。  
    刚才我们在函数栈里面看到了临界区，我们找一下是否有死锁的临界区。  
    使用 !cs -l 可以仅仅显示锁住的临界区。  
-```shell
+```
 0:000:x86> !cs -l
 -----------------------------------------
 DebugInfo          = 0x77a84380
@@ -83,7 +83,7 @@ SpinCount          = 0x00000000
    2. !cs -o 临界区地址 ， 也可以直接查看临界区所在的线程栈。
 7. 查看第一个临界区信息。
   这是1号线程的函数栈，DllMain里面调用了shell32 api，进入了临界区并等待，1号线程试图获取地址为[00299ebc]的锁。
-```shell
+```
 0:000:x86> !cs -o 0x77a820c0
 -----------------------------------------
 Critical section   = 0x77a820c0 (ntdll_77980000!LdrpLoaderLock+0x0)
@@ -113,7 +113,7 @@ OwningThread Stack =
 ```
 8. 查看第二个临界区信息。
    这是3号线程的函数栈，DllMain里面调用了shell32 api，进入了临界区并等待，试图获取地址为[77a820c0]的锁。
-```shell
+```
 0:000:x86> !cs -o 0x00299ebc
 -----------------------------------------
 Critical section   = 0x00299ebc (+0x299EBC)
@@ -144,7 +144,7 @@ OwningThread Stack =
 10. 但是，锁[00299ebc]被3号线程Owning，锁[77a820c0]被1号线程Owning。
 11. 1号和3号线程都拥有一把锁，同时在等待对方的锁，这样就产生了死锁。
 12. 再进一步的看。我们看一下临界区的数据结构。
-```shell
+```
 0:000:x86> dt RTL_CRITICAL_SECTION
 XXXXXX!RTL_CRITICAL_SECTION
    +0x000 DebugInfo        : Ptr32 _RTL_CRITICAL_SECTION_DEBUG
@@ -185,7 +185,7 @@ LockSemaphore      = 0x17C
 14. 建议使用 !cs 查看临界区。win还有其他命令，但是不好看。  
 [displaying-a-critical-section](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/displaying-a-critical-section)  
   参考win的文档，下面两个方式也可以查看某个临界区的信息，但是，它们的LockCount并不对。
-```shell
+```
 0:000:x86> dt RTL_CRITICAL_SECTION 00299ebc
 XXXXXX!RTL_CRITICAL_SECTION
    +0x000 DebugInfo        : 0x00287028 _RTL_CRITICAL_SECTION_DEBUG
