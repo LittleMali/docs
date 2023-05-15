@@ -24,8 +24,8 @@
 Switched to Guest (WoW) mode
 ```
 
-3. 看一下线程。
-   总共只有5个线程，并不多。
+3. 看一下线程。  
+   总共只有5个线程，并不多。  
    能看到有LoadLibrary，也能看到DllMain里面调用了shell接口。例如下面这个1号线程。那么，可能是load dll的时候死锁了。
 ```shell
 0:000:x86> ~*kvn
@@ -50,9 +50,9 @@ Switched to Guest (WoW) mode
 1e 020effec 00000000     00401154 00000000 00000000 ntdll_77980000!_RtlUserThreadStart+0x1b (FPO: [Non-Fpo])
 ```
 
-4. 确认下我们的猜测。
-   刚才我们在函数栈里面看到了临界区，我们找一下是否有死锁的临界区。
-   使用 !cs -l 可以仅仅显示锁住的临界区。
+4. 确认下我们的猜测。  
+   刚才我们在函数栈里面看到了临界区，我们找一下是否有死锁的临界区。  
+   使用 !cs -l 可以仅仅显示锁住的临界区。  
 ```shell
 0:000:x86> !cs -l
 -----------------------------------------
@@ -146,7 +146,7 @@ OwningThread Stack =
 12. 再进一步的看。我们看一下临界区的数据结构。
 ```shell
 0:000:x86> dt RTL_CRITICAL_SECTION
-iOAEntBiz!RTL_CRITICAL_SECTION
+XXXXXX!RTL_CRITICAL_SECTION
    +0x000 DebugInfo        : Ptr32 _RTL_CRITICAL_SECTION_DEBUG
    +0x004 LockCount        : Int4B
    +0x008 RecursionCount   : Int4B
@@ -154,9 +154,9 @@ iOAEntBiz!RTL_CRITICAL_SECTION
    +0x010 LockSemaphore    : Ptr32 Void
    +0x014 SpinCount        : Uint4B
 ```
-  LockCount: 标识关键区的锁状态。
-  RecursionCount: 记录递归次数，用来支持同一个线程多次进入关键区。
-  OwningThread: 记录拥有关键区的线程ID。
+  LockCount: 标识关键区的锁状态。  
+  RecursionCount: 记录递归次数，用来支持同一个线程多次进入关键区。  
+  OwningThread: 记录拥有关键区的线程ID。  
   LockSemaphore: 记录这个关键区对应的事件对象，当有线程需要等待这个关键区时，便等待这个事件，这个对象是按需创建的，如果为空，表示这个关键区没人用过,从没有线程在此等待过。
 
 13. 我们看一下前面两个锁等待的LockSemaphore分别是什么。两个线程所WaitForSingleobject分别是[0000017c]和[00000104]，他们分别在等待handle被激活。这也是死锁的进一步表现。
@@ -182,12 +182,12 @@ LockSemaphore      = 0x17C
 02a3f164 779cebd6     00000104 00000000 00000000 ntdll_77980000!NtWaitForSingleObject+0x15 (FPO: [3,0,0])
 ```
 
-14. 建议使用 !cs 查看临界区。win还有其他命令，但是不好看。
-[displaying-a-critical-section](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/displaying-a-critical-section)
+14. 建议使用 !cs 查看临界区。win还有其他命令，但是不好看。  
+[displaying-a-critical-section](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/displaying-a-critical-section)  
   参考win的文档，下面两个方式也可以查看某个临界区的信息，但是，它们的LockCount并不对。
 ```shell
 0:000:x86> dt RTL_CRITICAL_SECTION 00299ebc
-iOAEntBiz!RTL_CRITICAL_SECTION
+XXXXXX!RTL_CRITICAL_SECTION
    +0x000 DebugInfo        : 0x00287028 _RTL_CRITICAL_SECTION_DEBUG
    +0x004 LockCount        : 0n-6
    +0x008 RecursionCount   : 0n1
