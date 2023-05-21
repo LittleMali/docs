@@ -45,6 +45,21 @@ SetWindowsHookEx的3个参数都不难理解。
 注意到，在第4步和第6步中递增了2次锁计数器，在钩子函数执行完后只递减了1次计数器，所以，注入dll在进程B的地址空间中始终有效。只有当一个线程调用了UnHookWindowsHookEx时，系统会遍历自己内部的一个已经注入过该dll的进程列表，并将该dll锁计数器递减。当减到0时，系统会从进程的空间中撤销对dll的映射。
 
 ## 远程线程注入
+远程线程注入是利用windows提供的API：CreateRemoteThread。
+```
+HANDLE CreateRemoteThread(
+  HANDLE                 hProcess,
+  LPSECURITY_ATTRIBUTES  lpThreadAttributes,
+  SIZE_T                 dwStackSize,
+  LPTHREAD_START_ROUTINE lpStartAddress,
+  LPVOID                 lpParameter,
+  DWORD                  dwCreationFlags,
+  LPDWORD                lpThreadId
+);
+```
+
+CreateRemoteThread是在目标进程hProcess中执行一段代码，该代码就是我们想要注入的行为。通常，我们会将入口函数lpStartAddress设置为LoadLibrary，让LoadLibrary会加载我们的注入dll，以此来实现注入。
+详细可以见[远程线程注入原理](./%E8%BF%9C%E7%A8%8B%E7%BA%BF%E7%A8%8B%E6%B3%A8%E5%85%A5/%E8%BF%9C%E7%A8%8B%E7%BA%BF%E7%A8%8B%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86.md)
 
 ## inline注入
 
