@@ -8,6 +8,16 @@ SetWindowLongPtr只能hook本进程的窗口过程，用我们自定义的MySucC
 假设我们在另一个进程B中去尝试hook进程A的窗口，在进程B中可以用FindWindow来找到进程A的窗口句柄，那么在hook时，系统会判断MySucClassProc是否在同一个进程（进程A）中，若不在同一个进程中则会直接忽略。这是因为系统（User32.dll）无法在进程A中去访问进程B的MySucClassProc，这是两个不同进程的地址空间啊。  
 微软并没有实现这个功能，通过这个API是不用多想了。显然，要解决hook另一个进程的窗口过程，我们要让自己的代码进入另一个进程，在另一个进程的地址空间中调用SetWindowLongPtr，以此来解决进程地址空间边界问题。
 
+```
+ULONG_PTR SetClassLongPtrA(
+  [in] HWND     hWnd,
+  [in] int      nIndex,
+  [in] LONG_PTR dwNewLong
+);
+```
+上面的SetWindowLongPtr只能替换某个窗口的过程函数，它是针对某个具体的窗口，下面的SetClassLongPtrA是替换掉窗口类的过程函数。跟SetWindowLongPtr一样，下面的函数也没法跨进程hook。  
+在windows下，创建一个窗口程序，需要先`RegisterClassEx`注册窗口类，在窗口类的lpfnWndProc成员变量中去设置窗口过程函数。SetClassLongPtrA的作用就是替换这一类的窗口过程。
+
 ## 注册表注入DLL
 ```
 HKLM\Software\Microsoft\Windows NT\CurrentVersion\Windows\
