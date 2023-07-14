@@ -21,7 +21,8 @@ sudo apt-get upgrade // 将系统中旧版本的包升级成最新的
   `dpkg -L <package-name>`
 
 * 卸载  
-  `apt-get remove <package-name>`
+  保留配置：`apt-get remove <package-name>`  
+  同时删除配置：`apt-get purge <package-name>`
 
 * 查看可以安装的版本list  
   `apt-cache madison soft_name`
@@ -58,3 +59,11 @@ dpkg -P 全部卸载(但是还是不能解决软件包的依赖性的问题)
 `sudo apt-get install libglu1-mesa-dev`
 4. 安装OpenGL Utility ToolKit  
 `sudo apt-get install freeglut3-dev`
+
+## yum
+yum install
+yum remove 
+
+## rpm
+rpm -qa | grep git
+rpm -ql git
