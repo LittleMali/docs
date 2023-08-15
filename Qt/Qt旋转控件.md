@@ -1,0 +1,8 @@
+# Qt旋转控件
+
+方法1：
+重载paintEvent，旋转QPainter，然后绘制整个控件。这种方法的缺点是你需要自己处理所有的绘图和布局，这可能会比较复杂。
+方法2：
+使用 QGraphicsScene + QGraphicsView + QGraphicsProxyWidget，旋转单个控件。使用QGraphicsView和QGraphicsScene可能会使布局变得复杂，特别是当你有多个需要旋转的控件时。
+方法3：
+使用QML，QML是Qt的一种声明式语言，用于设计用户界面。在QML中，旋转和其他的变换可以直接应用到任何元素上，而不需要使用QGraphicsView或自定义的绘图代码。你可以使用QtQuick的Rotation元素来旋转一个Rectangle或其他的QtQuick元素。这种方法的缺点是你可能需要学习QML，并且可能需要重写你的界面代码。
