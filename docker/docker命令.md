@@ -15,8 +15,8 @@ https://www.widuu.com/chinese_docker/userguide/dockerimages.html
   `docker restart <container_name/container_id>`
 
 * 进入docker  
+  `docker exec -it <容器名称或ID> /bin/bash`  
   `docker attach <容器名称>`  
-  `docker exec -it <容器名称> /bin/bash`
 
 * docker后台运行  
   `docker run -itd --name <>`
@@ -30,3 +30,19 @@ https://www.widuu.com/chinese_docker/userguide/dockerimages.html
 
 * docker删除  
   `docker rm -f <container_id>`
+
+* docker映射的本地目录  
+  `docker inspect <容器名称或ID> | grep -i "Mounts"`
+```
+"Mounts": [
+    {
+        "Type": "bind",
+        "Source": "/root/ci_workspace/master",
+        "Destination": "/data",
+        "Mode": "",
+        "RW": true,
+        "Propagation": "rprivate"
+    }
+],
+```
+

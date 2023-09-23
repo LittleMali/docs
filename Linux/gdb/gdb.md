@@ -29,9 +29,9 @@
 
 ### 变量
 * 查看变量  
-`print this`
-`print this->m_flag`
-`print *this`
+`print this`  
+`print this->m_flag`  
+`print *this`  
 
 ### 传参
 调试某个本地程序时，如何给程序传入参数。
