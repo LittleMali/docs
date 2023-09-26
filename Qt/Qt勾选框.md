@@ -22,7 +22,7 @@ PyQt5的QLabel，使用 .setStyleSheet('text-align: center;') 尝试文字居中
 QCheckBox默认是带一个正方形的勾选框，前缀ico的样式由indicator设置。
 
 QRadioButton也是类似的。
-```
+```css
 QCheckBox {
     font-size: 12px;
     font-family: Noto Sans CJK SC;
@@ -47,6 +47,13 @@ QCheckBox::indicator:checked {
     width: 14px;
     height: 14px;
     background: url(:/icon/checkbox_checked);
+}
+
+/*部分选中*/
+QCheckBox::indicator:indeterminate {
+    width: 14px;
+    height: 14px;
+    background: url(:/icon/checkbox_partial);
 }
 
 QCheckBox::indicator:disabled {
