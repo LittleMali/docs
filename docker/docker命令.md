@@ -29,7 +29,11 @@ https://www.widuu.com/chinese_docker/userguide/dockerimages.html
   `cat ubuntu.tar | docker import - test/ubuntu:v1`
 
 * docker删除  
-  `docker rm -f <container_id>`
+```shell
+docker ps -a
+docker stop abcd1234
+docker rm abcd1234
+```
 
 * docker映射的本地目录  
   `docker inspect <容器名称或ID> | grep -i "Mounts"`
