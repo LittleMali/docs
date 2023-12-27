@@ -2,7 +2,12 @@
 
 ## 基础命令
 * 附加调试  
-`gdb attach %pid%`
+```
+gdb attach %pid% // attach
+detach // detach
+quit // 退出gdb
+```
+
 
 * 查看core-dmp  
 `gdb %proc_filepath% %dmp_filepath%`  
@@ -32,6 +37,16 @@
 `print this`  
 `print this->m_flag`  
 `print *this`  
+
+### 断点
+```
+break ClassName::FunaName // 添加断点
+
+info breakpoints // 查看断点
+
+delete 1 // 删除断点
+delete breakpoints // 删除所有断点
+```
 
 ### 传参
 调试某个本地程序时，如何给程序传入参数。

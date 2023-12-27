@@ -59,3 +59,10 @@ Aliases:  www.taobao.com
 
 ### host文件
 Linux下本地域名解析文件`/etc/resolv.conf`
+
+
+### 代理设置
+```
+# su - username -c "export DISPLAY=:0 && gsettings set org.gnome.system.proxy mode 'manual' && gsettings set org.gnome.system.proxy.http host '127.0.0.1' && gsettings set org.gnome.system.proxy.http port 12345  && gsettings set org.gnome.system.proxy.https host '127.0.0.1' && gsettings set org.gnome.system.proxy.https port 12345"
+
+```
