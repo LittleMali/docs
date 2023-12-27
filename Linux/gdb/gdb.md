@@ -46,6 +46,9 @@ info breakpoints // 查看断点
 
 delete 1 // 删除断点
 delete breakpoints // 删除所有断点
+
+next // 单步执行到下一行
+step // 跳入下一行函数
 ```
 
 ### 传参
