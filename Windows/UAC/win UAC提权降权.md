@@ -88,10 +88,6 @@ RunElevated(    HWND hwnd,
 ### requireAdministrator
 为子进程添加manifest文件，在manifest中指定要求管理员权限（requireAdministrator）。
 
-
-
-
-
 ## UAC降权
 在 Windows 系统中，管理员权限和非管理员权限运行的程序之间不能使用 Windows 提供的通信机制进行通信。对于部分文件夹（ProgramData），管理员权限创建的文件是不能以非管理员权限修改和删除的。
 
