@@ -6,6 +6,15 @@
 ## 查看耗时
 !runaway
 
+## 查看符号
+lmvm kernel32
+
+
+## 断点
+符号断点  
+bu Kernel32!CreateProcess
+
+
 ## 查看内存
 dt 0x1234 ModuleName!Class
 
