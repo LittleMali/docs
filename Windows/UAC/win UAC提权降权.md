@@ -110,3 +110,5 @@ explorer.exe是Medium权限，而且explorer一般都存在，并且是比较早
 2. 进程A通过RunExeByExplorer拉起notepad++，notepad++实际是通过explorer间接拉起的，notepad++实际继承的是explorer的Medium权限。
 3. 不能通过ShellExecute open方式打开notepad，这个方式应该是通过CreateProcess来起进程的，因此，notepad实际是拿到了父进程的high权限。
 
+### CreateProcessAsUser
+用这个api拉起进程。
