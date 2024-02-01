@@ -2,7 +2,7 @@
 
 使用Valgrind分析root进程时，提示Permission denied。
 ```
-$ sudo valgrind --tool=massif /opt/apps/my_file
+$ sudo valgrind --tool=massif --massif-out-file=massif.out /opt/apps/my_file
 ==16660== 
 ==16660== Warning: Can't execute setuid/setgid/setcap executable: /opt/apps/my_file
 ==16660== Possible workaround: remove --trace-children=yes, if in effect
