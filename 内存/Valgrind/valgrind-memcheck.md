@@ -1,4 +1,6 @@
-# 内存检测memcheck原理
+# valgrind memcheck
+
+memcheck是检测内存泄漏的工具。
 
 本文记录memcheck的原理。  
 参考文献：  
