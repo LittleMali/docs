@@ -74,14 +74,14 @@ typedef struct _TOKEN
      ULONG SessionId;
      ULONG UserAndGroupCount;  //
      ULONG RestrictedSidCount;  //
-     ULONG VariableLength;
+     ULONG VariableLength; // ULONG PrivilegeCount
      ULONG DynamicCharged;
      ULONG DynamicAvailable;
      ULONG DefaultOwnerIndex;
      PSID_AND_ATTRIBUTES UserAndGroups;
      PSID_AND_ATTRIBUTES RestrictedSids;
      PVOID PrimaryGroup;
-     ULONG * DynamicPart;
+     ULONG * DynamicPart; // PLUID_AND_ATTRIBUTES Privileges
      PACL DefaultDacl;
      TOKEN_TYPE TokenType; //
      SECURITY_IMPERSONATION_LEVEL ImpersonationLevel;
@@ -98,8 +98,49 @@ typedef struct _TOKEN
      ULONG VariablePart;
 } TOKEN, *PTOKEN;
 ```
+说明，上面的数据结构来自于网络，与书上的部分字段定义有区别，我用注释的方式区分了，注释是书上的写法。
 
+#### 2.2.1 特权描述
+指针Privileges指向一个LUID_AND_ATTRIBUTES数组，PrivilegeCount表示数组的大小。
+```c
+typedef struct _LUID_AND_ATTRIBUTES {
+  LUID  Luid;
+  DWORD Attributes;
+} LUID_AND_ATTRIBUTES, *PLUID_AND_ATTRIBUTES;
+```
+Luid是特权描述定义，用于描述特权的类似，可以理解为 此token允许用户（进程/线程）做什么什么事情，是一个枚举值，比如：
+```c
+#define SE_CREATE_TOKEN_NAME 2
+#define SE_ASSIGNPRIMARYTOKEN_NAME 3
+#define SE_IMPERSONATE_NAME 29
+// https://learn.microsoft.com/en-us/windows/win32/secauthz/privilege-constants
+```
+比如，一个进程想要创建token，它的token中就要有`SE_CREATE_TOKEN_NAME`特权，否则，就会被内核拒绝。
+
+Attributes是特权开启标记。
+```c
+#define SE_PRIVILEGE_ENABLED_BY_DEFAULT 1
+#define SE_PRIVILEGE_ENABLED 2
+#define SE_PRIVILEGE_USED_FOR_ACCESS 0x80000000
+```
+
+#### 2.2.2 创建Token
 Token是进程EPROCESS的结构，进程的数据结构中有EX_FAST_REF指针指向TOKEN变量。因此，多个进程的token可能指向了同一个数据结构。事实上，一个用户登录以后，用户名下的进程可能都挂着同一个token。这是因为在创建进程时，默认会从父进程继承其token。
+
+需要注意的是 进程并不会去访问文件或者对象，实际发生访问行为的是线程，因此，是线程拿着Token去做事情。所以，我们称进程的Token是“自有Token”（Primary Token），一个线程可以佩戴primary token去访问，也可以佩戴其他进程的token。如果佩戴其他进程的token，这叫做Impersonation。
+
+为什么会有Impersonation token，这主要是一些服务进程，服务进程可能会起工作线程去响应某些用户请求，用户请求往往是客户线程发起的，因此，服务进程的线程需要以用户的身份去做某些响应，要以用户的token去干活，所以，要佩戴用户的token。
+
+如果是佩戴用户token，还有“套用级别”（Impersonation Level）的问题。
+```c
+typedef enum _SECURITY_IMPERSONATION_LEVEL {
+  SecurityAnonymous,
+  SecurityIdentification,
+  SecurityImpersonation,
+  SecurityDelegation
+} SECURITY_IMPERSONATION_LEVEL, *PSECURITY_IMPERSONATION_LEVEL;
+```
+
 
 ## 名词汇总
 | 缩写 | 中文         | 英文                         |
