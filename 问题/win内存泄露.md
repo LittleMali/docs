@@ -6,85 +6,59 @@
 * umdh.exe
 * gflags.exe
 
-### 如何使用 `umdh` 检测运行中的进程的内存泄露：
+## 使用方法
+```bash
+# 设置pdb路径
+set _NT_SYMBOL_PATH=D:\symbols;D:\symbols\tmp;D:\symbols\tmp\PDB;srv*D:\symbols\microsoft*https://msdl.microsoft.com/download/symbols
 
-1. **确保环境配置正确**：
-   - 安装Windows调试工具，这通常包括在Windows SDK中。
-   - 配置符号文件路径，以便 `umdh` 能够正确解析地址到具体的代码行或函数名。
+# 开启gflags
+# 只用进程名即可。
+gflags.exe -i test.exe +ust
 
-2. **捕获初始堆快照**：
-   - 在你怀疑开始出现内存泄漏之前，捕获一个堆快照。使用命令：
-     ```bash
-     umdh -p:<PID> -f:first_snapshot.txt
-     ```
-     其中 `<PID>` 是目标进程的进程ID。
+# 运行test.exe
 
-3. **执行可能导致内存泄漏的操作**：
-   - 在应用程序中执行一系列操作，这些操作可能会引起内存泄漏。
+# 开始第一次内存抓取
+# pid是test.exe的进程
+umdh.exe -p:pid -f:test.1.log
 
-4. **捕获第二个堆快照**：
-   - 在执行了上述操作后，捕获第二个堆快照：
-     ```bash
-     umdh -p:<PID> -f:second_snapshot.txt
-     ```
+# 等待一段时间
 
-5. **比较两个堆快照**：
-   - 使用 `umdh` 比较这两个快照来分析内存分配的差异：
-     ```bash
-     umdh first_snapshot.txt second_snapshot.txt > diff.txt
-     ```
-   - 分析 `diff.txt` 文件中的输出，查找内存分配增加的部分，这些通常是内存泄漏的迹象。
+# 第二次抓取内存
+umdh.exe -p:pid -f:test.2.log
 
-### 注意事项：
+# 生成内存差异结果
+umdh.exe test.1.log test.2.log > test.log
 
-- **管理员权限**：运行 `umdh` 需要管理员权限。
-- **性能考虑**：虽然 `umdh` 的操作对性能的影响相对较小，但在高负载或生产环境中运行时仍需谨慎，因为生成堆快照可能会稍微影响性能。
-- **持续监控**：如果需要持续监控内存泄漏，可能需要定期捕获堆快照并进行比较。
+# 对比内存差异，看test.log文件
++  5a2e86 ( 2a8067e - 24dd7f8)  dc8a0 allocs	BackTrace3965308
++   29998 ( dc8a0 - b2f08)	BackTrace3965308	allocations
 
-通过这种方式，`umdh` 可以帮助你在进程运行期间识别和分析内存泄漏问题，而无需中断服务或应用程序的正常运行。
+	ntdll!RtlpCallInterceptRoutine+26
+	ntdll!RtlpAllocateHeapInternal+108C
+	ntdll!RtlAllocateHeap+3E
+	MSVCR80!malloc+7A (f:\dd\vctools\crt_bld\self_x86\crt\src\malloc.c, 163)
 
-使用 `umdh` 时，配合 `gflags` 可以提高内存泄漏检测的效果。`gflags`（全局标志）是一个工具，用于修改系统或特定进程的运行时配置，以帮助调试和测试。通过 `gflags`，你可以设置系统以记录更详细的堆使用信息，这对于使用 `umdh` 进行内存泄漏分析尤其有用。
-
-### 如何使用 `gflags` 与 `umdh`：
-
-1. **启用堆日志记录**：
-   - 使用 `gflags` 启用堆日志记录可以让 `umdh` 提供更详细的内存分配和释放信息。这是通过设置特定的堆调试标志来完成的。
-   - 打开 `gflags`。如果你已经安装了Windows调试工具，你可以在开始菜单中找到 `gflags`。
-   - 在 `gflags` 的界面中，选择“Image File”选项卡。
-   - 输入你想要调试的进程的名称（例如，`myapplication.exe`）。
-   - 在“Image File Options”中，设置堆调试选项：
-     - 勾选 `Enable page heap` 选项。这会使系统对该进程的堆操作进行更严格的监控，记录更多的信息，有助于 `umdh` 进行分析。
-
-2. **运行你的应用程序**：
-   - 启动你的应用程序，让它在启用了增强堆监控的情况下运行。
-
-3. **使用 `umdh` 捕获和比较堆快照**：
-   - 如之前所述，使用 `umdh` 在关键时间点捕获堆快照，并进行比较。
-
-### 注意事项：
-
-- **性能影响**：启用 `gflags` 的 `Enable page heap` 选项可能会显著影响应用程序的性能，因为它会增加系统对内存操作的检查。建议仅在调试期间或在非生产环境中使用此设置。
-- **重启应用程序**：更改 `gflags` 设置后，通常需要重启目标应用程序，以确保设置生效。
-- **管理员权限**：运行 `gflags` 和 `umdh` 都需要管理员权限。
-
-通过这种方式，`gflags` 和 `umdh` 的结合使用可以帮助你更准确地识别和分析内存泄漏问题。这种方法特别适用于复杂的应用程序，其中内存泄漏可能不容易直接观察到。
-
-## umdh检测内存泄露
-
-1. 开启gflag标记。
-2. umdh抓取一次进程快照。
-3. undh抓取第二次进程快照。
-4. 两次进行比对，看内存差异。
-
-```
-cd C:\Program Files (x86)\Debugging Tools for Windows (x86)  //step1
-set _NT_SYMBOL_PATH=XXXX  //step2,XXX为exe所在文件夹的路径
-gflags -i XXXX.exe +ust  //step3，被监控的软件
-umdh -pn:XXXX.exe -f:d:\Snap1.log  //step5， 创建快照
-
-umdh -pn:XXXX.exe -f:d:\Snap2.log  //step7， 再次创建快照
-umdh -d D:\Snap1.log D:\Snap2.log -f:d:\result.txt //step8，分析两次差异，结果在result.txt中
+# 记得清楚gflags标记
+gflags.exe -i test.exe -ust
 ```
 
-gflag标记如下：
-![picture 1](../images/6f26c343ea37d515b7d2d94ba749c294eb67b14fd812c8141741d69993ce254c.png)  
+上面有一个示例结果报告。
+
+step1：  
+5a2e86 是总共泄露了多少内存，发生的位置是 BackTrace3965308。  
+其后的内容是函数调用栈。可以看到是malloc分配内存。
+
+step2：  
+回到test.2.log日志，去搜索BackTrace3965308，看看是谁在调用。  
+test.2.log里面没有识别到pdb，只有函数地址，所以，我们最好同步的导出一份fulldmp，在fulldmp中去看这个地址：`ln 77D27AE4`。  
+
+```
+C6 bytes + 1A at 56004C0 by BackTrace3965308
+	77D27AE4
+	77C96FCC
+	77C95F2E
+	758D4D83
+```
+
+step3：  
+这个调用是malloc，太多地方在调用了，没有找出来是哪个地方泄露的。
