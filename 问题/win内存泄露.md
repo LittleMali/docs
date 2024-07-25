@@ -1,5 +1,7 @@
 # win内存泄露
 
+https://learn.microsoft.com/zh-cn/windows-hardware/drivers/debugger/using-umdh-to-find-a-user-mode-memory-leak
+
 即使一个进程已经在运行了，你依然可以使用 umdh 来检测内存泄露。umdh 的设计就是为了在进程运行中捕获和分析堆内存的快照，从而帮助你识别内存泄漏。这种方法不需要停止或暂停进程，因此可以在不中断应用程序正常运行的情况下进行内存泄漏分析。
 
 ## 工具
