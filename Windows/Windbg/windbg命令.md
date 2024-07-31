@@ -9,11 +9,21 @@
 ## 查看符号
 lmvm kernel32
 
-
 ## 断点
 符号断点  
 bu Kernel32!CreateProcess
 
+```bash
+# 搜索某个函数符号
+0:075> x *!*HeapAlloc*
+76bf8530          KERNELBASE!PsspDefaultProcessHeapAllocRoutine (void)
+76b6e019          KERNELBASE!WerpHeapAlloc (void)
+77d2eeb8          ntdll!RtlpScanHeapAllocBlocks (_RtlpScanHeapAllocBlocks@0)
+77cbc810          ntdll!RtlDisownModuleHeapAllocation (_RtlDisownModuleHeapAllocation@8)
+77cb4bf3          ntdll!RtlpLowFragHeapAllocateFromZone (@RtlpLowFragHeapAllocateFromZone@8)
+77d48b1e          ntdll!RtlpHpHeapAllocate (_RtlpHpHeapAllocate@16)
+77d3f157          ntdll!RtlpLogHeapAllocateEvent (_RtlpLogHeapAllocateEvent@16)
+```
 
 ## 查看内存
 dt 0x1234 ModuleName!Class
@@ -57,3 +67,9 @@ ntdll_77980000!NtWaitForSingleObject+0x15:
   !cs -l
 * 查看某个临界区的栈
   !cs -o 0x000005f4
+
+  ## 堆
+* 查看heap
+  !heap -s
+* 看堆统计信息
+  !heap -stat -h 
