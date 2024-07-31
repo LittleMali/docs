@@ -8,9 +8,9 @@ git config --global user.name "Your Name"
 再保存  
 git config --global credential.helper store
 
-user.name=semonma
-user.email=semonma@tencent.com
-user.password=maLiang@11
+user.name=xx
+user.email=xx
+user.password=xxx
 credential.helper=store
 
 ## 修改了git密码以后
