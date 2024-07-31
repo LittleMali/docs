@@ -8,10 +8,10 @@ git config --global user.name "Your Name"
 再保存  
 git config --global credential.helper store
 
-user.name=xx
-user.email=xx
-user.password=xxx
-credential.helper=store
+user.name=xx  
+user.email=xx  
+user.password=xxx  
+credential.helper=store  
 
 ## 修改了git密码以后
 1. 确认git使用什么机制缓存了凭据。
