@@ -2,6 +2,8 @@
 
 https://learn.microsoft.com/zh-cn/windows-hardware/drivers/debugger/using-umdh-to-find-a-user-mode-memory-leak
 
+https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/preparing-to-use-umdh
+
 即使一个进程已经在运行了，你依然可以使用 umdh 来检测内存泄露。umdh 的设计就是为了在进程运行中捕获和分析堆内存的快照，从而帮助你识别内存泄漏。这种方法不需要停止或暂停进程，因此可以在不中断应用程序正常运行的情况下进行内存泄漏分析。
 
 ## 工具
@@ -10,6 +12,8 @@ https://learn.microsoft.com/zh-cn/windows-hardware/drivers/debugger/using-umdh-t
 
 ## 使用方法
 ```bash
+# Disable BSTR Caching
+set OANOCACHE=1
 # 设置pdb路径
 set _NT_SYMBOL_PATH=D:\symbols;D:\symbols\tmp;D:\symbols\tmp\PDB;srv*D:\symbols\microsoft*https://msdl.microsoft.com/download/symbols
 
