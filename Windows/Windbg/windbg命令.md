@@ -73,3 +73,11 @@ ntdll_77980000!NtWaitForSingleObject+0x15:
   !heap -s
 * 看堆统计信息
   !heap -stat -h 
+  !exts.heap -s -h 00c00000 -- 这个命令很慢
+* 看一个堆块的详细信息
+  !heap -a 00c00000
+
+## 句柄
+* 看句柄信息
+  !handle 00000080 f
+
