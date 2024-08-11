@@ -43,9 +43,9 @@ Netlink Connector 是一种 Netlink ，它的 Netlink 协议号是 NETLINK_CONNE
 ![picture 1](../images/705e4a25900635e154463b0ee1dde87b8b5d5ba6e9f5e205ab5a41c06b573d18.png)  
 
 在 Github 上已有人基于进程事件连接器开发了一个简单的进程监控程序：https://github.com/ggrandes-clones/pmon/blob/master/src/pmon.c ，其核心函数为以下三个：
-* nl_connect：与内核建立连接
-* set_proc_ev_listen：订阅进程事件
-* handle_proc_ev：处理进程事件
+* nl_connect：与内核建立连接。
+* set_proc_ev_listen：订阅进程事件。
+* handle_proc_ev：处理进程事件。
 其执行流程正如上图所示。
 
 ### 优缺点
@@ -53,9 +53,9 @@ Netlink Connector 是一种 Netlink ，它的 Netlink 协议号是 NETLINK_CONNE
   1. 内核支持 Netlink Connector。
   2. 版本 > 2.6.14。
   3. 内核配置开启： cat/boot/config-$(uname-r)|egrep'CONFIG_CONNECTOR|CONFIG_PROC_EVENTS'。
-* 优点
+* 优点  
   轻量级，在用户态即可获得内核提供的信息。
-* 缺点
+* 缺点  
   仅能获取到 pid ，详细信息需要查 /proc/<pid>/，这就存在时间差，可能有数据丢失。
 
 ## Audit
@@ -87,12 +87,12 @@ ausearch -sc execve | grep /usr/bin/id
 ```
 
 ### 优缺点
-* 使用条件
+* 使用条件  
   内核开启 Audit：`cat/boot/config-$(uname-r) | grep^CONFIG_AUDIT`
 * 优点
   1. 组件完善，使用 auditd 软件包中的工具即可满足大部分需求，无需额外开发代码。
   2. 相比于 Netlink Connector ，获取的信息更为全面，不仅仅是 pid 。
-* 缺点
+* 缺点  
   性能消耗随着进程数量提升有所上升，需要通过添加白名单等配置来限制其资源占用。
 
 ## syscall
@@ -111,7 +111,7 @@ ausearch -sc execve | grep /usr/bin/id
 * 使用条件
   1. 可以安装内核模块。
   2. 需针对不同 Linux 发行版和内核版本进行定制。
-* 优点
+* 优点  
   高定制化，从系统调用层面获取完整信息。
 * 缺点
   1. 开发难度大。
