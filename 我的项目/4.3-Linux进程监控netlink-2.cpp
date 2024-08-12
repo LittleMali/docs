@@ -154,7 +154,6 @@ static int handle_proc_ev(int nl_sock)
             }
             else
             {
-                TXLOG_DEBUG("run nothing end rc: %d.", rc);
                 std::this_thread::sleep_for(std::chrono::seconds(2));
             }
         }

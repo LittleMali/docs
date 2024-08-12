@@ -28,8 +28,6 @@ extern "C"
         }
 
         g_init = true;
-
-        txcore::TxIpc::GetInstance()->Get();
     }
 
     __attribute__((destructor)) static void SoFinal(void)
@@ -37,7 +35,7 @@ extern "C"
         if (!g_init)
             return;
 
-        HookApi::DestroyInstance();
+        // do something
     }
 
     // hook api: execve
