@@ -1,23 +1,5 @@
-# windbg heap命令
+# win内存泄露windbg
 
-Kernel32.dll的HeapAlloc函数，实际是个函数转发器，Kernel32中的HeapAllock被转向到NTDLL!RtlAllocateHeap中。
-
-![picture 0](../../images/636867d9fc69320e3e9ca54518b03cbe697c316cf72b3bb2aefa76b8ed286c70.png)  
-
-所以，断点应该是
-```
-# 设置断点
-bp ntdll!RtlAllocateHeap
-bp ntdll!RtlAllocateHeap "j (@esp+0xc == 0x400) ''; 'gc'"
-
-# 查看断点
-0:078> bl
-     0 e Disable Clear  77c95ef0     0001 (0001)  0:**** ntdll!RtlAllocateHeap
-
-# 删除断点，用序号删除
-bc 0
-
-```
 
 ```shell
 # 查看堆统计信息
