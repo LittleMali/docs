@@ -1,62 +1,92 @@
 # win内存泄露windbg
 
+进程的内存泄露有两种，一个是heap leak，一个是virtual memory leak。大体上来说，
+* new/malloc是从“标准内存管理器”上分配内存，也就是crt堆。
+* HeapAlloc是直接在“堆管理器”上申请内存。
+* VirtualAlloc是直接从“虚拟内存管理器”上申请内存。
+
+因此，今天我们遇到的问题的 heap mem leak，也就是通过new/malloc/HeapAlloc的内存泄露问题。  
+Virtual mem leak还没有遇到过，理论上可以通过etw来分析。
+
+![picture 2](../images/82b0f90de4bbad0f46c35387275d5bcda882d89a041a416e732c9926300e644e.png)  
+
+## 分析步骤
+### 确定heap内存泄露
+通过procexp看PrivateBytes大小。
+
+通过vmmap看具体的内存分布，先确认是heap内存在增长，增长的幅度和总内存（private bytes）增长相当。
+
+### 分析dmp
+多次抓取dmp，看heap差异，是哪个堆块的内存在增长。
 
 ```shell
-# 查看堆统计信息
+## 我们重点解释第二个dmp文件。
+## 查看堆统计信息
 0:000> !heap -s
-
-
-************************************************************************************************************************
-                                              NT HEAP STATS BELOW
-************************************************************************************************************************
-LFH Key                   : 0xc029131e
-Termination on corruption : DISABLED
   Heap     Flags   Reserv  Commit  Virt   Free  List   UCR  Virt  Lock  Fast 
                     (k)     (k)    (k)     (k) length      blocks cont. heap 
 -----------------------------------------------------------------------------
-00d40000 00000002   78796  62424  78584   4750  1123    74    2     5a   LFH
-00d10000 00001002    1292    404   1080     26    22     2    0      0   LFH
-028a0000 00001002  750640 749024 750428   1574  2353   249    6   565c   LFH
-04260000 00001002      60     20     60      5     1     1    0      0      
-08ab0000 00001002    1292    532   1080    115    14     2    0      0   LFH
-0df60000 00001002      60      8     60      3     1     1    0      0      
-20e30000 00001002    1292    536   1080    219     9     2    0      0   LFH
-258e0000 00001002    1292    108   1080     31     9     2    0      4   LFH
-22460000 00001002    1292    132   1080     43     9     2    0      0   LFH
-25490000 00001002     272     64     60     20     8     1    0     25   LFH
+0d7b0000 08000002   16420  14416  16364    361   283     5    0      4   LFH
+0df00000 08001002    1136    124   1080     12    10     2    0      0   LFH
+0f6c0000 08001002   47836  26644  47780   3729   346    30    3     22   LFH
+    External fragmentation  14 % (346 free blocks)
+10f90000 08001002     116     44     60      5     6     1    0      0   LFH
+1bc10000 08001002    1080    136   1080    129     3     2    0      0      
+1e7d0000 08001002      60     32     60     16     2     1    0      0      
+1dae0000 08001002     116     64     60     21     8     1    0      3   LFH
 -----------------------------------------------------------------------------
 
-# 查看某个堆的统计分布
-0:000> !heap -stat -h 028a0000 
- heap @ 028a0000
+
+## 对比第一个dmp，我们看到 0d7b0000 堆块的大小增长明显。
+## 0d7b0000 08000002   16420  11556  16364    495   249     5    0      2   LFH
+
+## 看0d7b0000堆的分布
+0:000> !heap -stat -h 0d7b0000 
+ heap @ 0d7b0000
 group-by: TOTSIZE max-display: 20
     size     #blocks     total     ( %) (percent of total busy bytes)
-    40000 1 - 40000  (18.15)
-    44 a95 - 2cf94  (12.75)
-    50 358 - 10b80  (4.74)
-    f000 1 - f000  (4.25)
-    1000 d - d000  (3.69)
-    30 455 - cff0  (3.68)
-    18 87a - cb70  (3.60)
-    24 568 - c2a0  (3.45)
-    6004 2 - c008  (3.40)
-    2c 3d4 - a870  (2.98)
-    80 120 - 9000  (2.55)
-    cc b1 - 8d0c  (2.50)
-    a0 c9 - 7da0  (2.23)
-    300 20 - 6000  (1.70)
-    14 496 - 5bb8  (1.63)
-    220 29 - 5720  (1.54)
-    214 26 - 4ef8  (1.40)
-    3c 12a - 45d8  (1.24)
-    10 437 - 4370  (1.19)
-    4020 1 - 4020  (1.14)
+    30 e793 - 2b6b90  (32.13)
+    40 54f7 - 153dc0  (15.72)
+    54510 3 - fcf30  (11.70)
+    20 68ea - d1d40  (9.70)
+    60 e40 - 55800  (3.95)
 
-0:000> !heap -flt s 40000 
-    _HEAP @ d40000
-    _HEAP @ d10000
-    _HEAP @ 28a0000
+## 同样的，对比一下第一个dmp，我们看到是size=30bytes的内存块增长了很多，现在是分配了e793次。
+
+## 过滤堆块，s是size的意思，30是上面的30bytes。
+0:000> !heap -flt s 30
+    _HEAP @ d7b0000
       HEAP_ENTRY Size Prev Flags    UserPtr UserSize - state
-        029d1b78 8001 0000  [00]   029d1b80    40000 - (busy)
+        1a949568 0009 0009  [00]   1a949580    00030 - (busy)
+          Plugin!ATL::g_strmgr
+        1a9495b0 0009 0009  [00]   1a9495c8    00030 - (busy)
+          Plugin!ATL::g_strmgr
+        1a9495f8 0009 0009  [00]   1a949610    00030 - (busy)
+          Plugin!ATL::g_strmgr
+        1a949640 0009 0009  [00]   1a949658    00030 - (busy)
+          Plugin!ATL::g_strmgr
+        1a949688 0009 0009  [00]   1a9496a0    00030 - (busy)
 
+## 由于30分配了e793次，所以，可以提前按break停止打印，否则信息太多。
+## 上面显示了部分结果。
+## 我们再继续看单个堆块的信息
+0:000> !heap -p -a 1a949568
+    address 1a949568 found in
+    _HEAP @ d7b0000
+      HEAP_ENTRY Size Prev Flags    UserPtr UserSize - state
+        1a949568 0009 0000  [00]   1a949580    00030 - (busy)
+          Plugin!ATL::g_strmgr
+        7711e236 ntdll!RtlpCallInterceptRoutine+0x00000028
+        7708d69e ntdll!RtlpAllocateHeapInternal+0x0000102e
+        7708c65e ntdll!RtlAllocateHeap+0x0000003e
+        6fdc6b4c Plugin!ATL::CWin32Heap::Allocate+0x0000000f
+        6fcd63af Plugin!ATL::CSimpleStringT<wchar_t,0>::Fork+0x00000028
+        6fcd6204 Plugin!ATL::CSimpleStringT<wchar_t,0>::operator=+0x0000000e
+
+        6fd7199b Plugin!CCommonCfg::ParseBaseInfo+0x0000000f
+        6fd713cc Plugin!CCommonCfg::Parse+0x0000019b
+
+## 这下就看到具体的函数调用栈了。再结合代码，就可以分析到了。
+0:000> ln 6fd7199b 
+ [e:\config\commonadcfg.cpp @ 679] (6fd7198c)   Plugin!CCommonCfg::ParseBaseInfo+0xf   |  (6fd71a10)   Plugin!CCommonCfg::CalcFileMd5
 ```
