@@ -16,7 +16,64 @@ Linux内核自2.6.13版本开始引入，主要是监控文件操作。
 * 自删除（IN_DELETE_SELF）：被监控的文件或目录被删除。
 * 自移动（IN_MOVE_SELF）：被监控的文件或目录被移动。
 
-注意：inotify最大的问题是，拿不到进程pid，也就是不知道是谁操作了文件。同时，inotify只能监控指定目录及其下一级子目录，无法再覆盖下下级子目录。
+注意：inotify最大的问题是：
+1. inotify拿不到进程pid，也就是不知道是谁操作了文件。
+2. inotify只能监控指定目录及其下一级子目录，无法再覆盖下下级子目录。
+
+所以，我们不使用inotify进行文件监控的原因就在此。
+
+### inotify使用
+如何判断系统是否支持inotify？
+```shell
+## 输出y表示支持
+% grep INOTIFY_USER /boot/config-$(uname -r)
+CONFIG_INOTIFY_USER=y
+```
+
+inotify 工具库提供监控文件系统活动的命令行工具。
+```shell
+$ apt-get install inotify-tools
+
+## 该工具提供两个命令
+## inotifywait 仅执行阻塞，等待 inotify 事件。
+## 开启监控，
+##  -r|--recursive	Watch directories recursively.
+##  -m|--monitor  	Keep listening for events forever.  Without this option, inotifywait will exit after one。
+$ inotifywait -rm /home/user/桌面/inotify-test
+
+## 在文件夹中进行操作时，inotifywait会打印很多event事件。
+$ inotifywait -rm /home/user/桌面/inotify-test
+Setting up watches.  Beware: since -r was given, this may take a while!
+Watches established.
+
+## 这是ls命令的事件日志。
+/home/user/桌面/inotify-test/ OPEN,ISDIR 
+/home/user/桌面/inotify-test/ ACCESS,ISDIR 
+/home/user/桌面/inotify-test/ CLOSE_NOWRITE,CLOSE,ISDIR 
+
+# 这是 mv dir1/inner-dir/test2.txt ./yoyoy.txt 的事件日志。
+/home/user/桌面/inotify-test/dir1/inner-dir/ MOVED_FROM test2.txt
+/home/user/桌面/inotify-test/ MOVED_TO yoyoy.txt
+/home/user/桌面/inotify-test/ OPEN yoyoy.txt
+/home/user/桌面/inotify-test/ ACCESS yoyoy.txt
+/home/user/桌面/inotify-test/ CLOSE_NOWRITE,CLOSE yoyoy.txt
+/home/user/桌面/inotify-test/ OPEN yoyoy.txt
+/home/user/桌面/inotify-test/ ACCESS yoyoy.txt
+/home/user/桌面/inotify-test/ CLOSE_NOWRITE,CLOSE yoyoy.txt
+/home/user/桌面/inotify-test/ OPEN yoyoy.txt
+/home/user/桌面/inotify-test/ ACCESS yoyoy.txt
+/home/user/桌面/inotify-test/ CLOSE_NOWRITE,CLOSE yoyoy.txt
+
+## inotifywatch 收集关于被监视的文件系统的统计数据，包括每个 inotify 事件发生多少次。
+$ inotifywatch -r /home/user/桌面/inotify-test
+Establishing watches...
+Finished establishing watches, now collecting statistics.
+
+## 在文件夹里面进行各种操作，然后，退出inotifywatch。
+total  access  modify  close_write  close_nowrite  open  filename
+26     8       2       1            7              8     /home/user/桌面/inotify-test/
+```
+
 
 ## fanotify
 fanotify是inotify的替代版，从内存2.6.36版本引入。相对inotify而言，fanotify的优势有：
