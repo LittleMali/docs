@@ -18,7 +18,7 @@ Linux内核自2.6.13版本开始引入，主要是监控文件操作。
 
 注意：inotify最大的问题是：
 1. inotify拿不到进程pid，也就是不知道是谁操作了文件。
-2. inotify只能监控指定目录及其下一级子目录，无法再覆盖下下级子目录。
+2. inotify只能监控指定目录及该目录下的文件，无法递归的监控下级子目录！！！
 
 所以，我们不使用inotify进行文件监控的原因就在此。
 
@@ -77,5 +77,8 @@ total  access  modify  close_write  close_nowrite  open  filename
 
 ## fanotify
 fanotify是inotify的替代版，从内存2.6.36版本引入。相对inotify而言，fanotify的优势有：
-* inotify是旁路监听，fanotify可以对文件操作进行阻断。
-* inotify只能监控指定目录及其下一级子目录的文件变化，再往下的子目录就不行了，fanotify可以监控整个指定目录，包括其下所有子目录的变化。
+* inotify只能监控指定目录及其下的文件变化，无法监控子目录的变化，fanotify稍微进步了一些，可以监控指定目录及其下一级的子目录，如果想再往下一级目录那就不行了。
+* fanotify提供了global模式，可以监控全盘的文件变化，也提供了per-mount模式，可以监控某个挂载点上所有文件的变化。这算是一种变通，我们可以通过过滤的方式来忽略掉我们不感兴趣的文件从而达到 递归监控整个目录的效果。
+* 当然，使用inotify和fanotify都可以用代码实现监控，递归遍历出所有的子目录然后一个一个监控。
+* inotify只能知道某个文件被操作了，但是，它不知道是谁操作的，也就是说inotify拿不到pid，但是，fanotify可以。
+* inotify是旁路监听，fanotify可以对文件操作进行阻断，当一个文件被打开或运行时，系统会阻塞当前进程的调用，直到fanotify写入allow/deny结果，才会恢复运行。
