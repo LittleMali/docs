@@ -1,6 +1,6 @@
 // Linux fanotify demo
 
-// 参考代码： https: // github.com/jrelo/fs_monitoring
+// 参考代码： https://github.com/jrelo/fs_monitoring
 
 /*
  *   File:   fanotify-example-mount.c
