@@ -1,24 +1,8 @@
 // Linux fanotify demo
 
 // 参考代码： https://github.com/jrelo/fs_monitoring
+// 修复了编译不过的问题。
 
-/*
- *   File:   fanotify-example-mount.c
- *   Date:   Thu Nov 14 13:47:37 2013
- *   Author: Aleksander Morgado <aleksander@lanedo.com>
- *
- *   A simple tester of fanotify in the Linux kernel.
- *
- *   This program is released in the Public Domain.
- *
- *   Compile with:
- *     $> gcc -o fanotify-example-mount fanotify-example-mount.c
- *
- *   Run as:
- *     $> ./fanotify-example-mount /mount/path /another/mount/path ...
- */
-
-/* Define _GNU_SOURCE, Otherwise we don't get O_LARGEFILE */
 #include <stdio.h>
 #include <signal.h>
 #include <string.h>
@@ -30,7 +14,7 @@
 #include <sys/stat.h>
 #include <sys/signalfd.h>
 #include <fcntl.h>
-
+#include "sys/fanotify.h"
 #include <linux/fanotify.h>
 
 /* Structure to keep track of monitored directories */
@@ -176,7 +160,7 @@ initialize_fanotify(int argc,
     int fanotify_fd;
 
     /* Create new fanotify device */
-    if ((fanotify_fd = fanotify_init(FAN_CLOEXEC | FAN_NONBLOCK,
+    if ((fanotify_fd = fanotify_init(FAN_CLOEXEC | FAN_NONBLOCK | FAN_CLASS_CONTENT,
                                      O_RDONLY | O_CLOEXEC | O_LARGEFILE | O_NOATIME)) < 0)
     {
         fprintf(stderr,
@@ -187,7 +171,7 @@ initialize_fanotify(int argc,
 
     /* Allocate array of monitor setups */
     n_monitors = argc - 1;
-    monitors = malloc(n_monitors * sizeof(monitored_t));
+    monitors = (monitored_t *)malloc(n_monitors * sizeof(monitored_t));
 
     /* Loop all input directories, setting up marks */
     for (i = 0; i < n_monitors; ++i)
