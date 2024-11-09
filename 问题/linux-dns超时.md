@@ -83,6 +83,9 @@ resolve_server
 							getaddrinfo_thread
 								rc = Curl_getaddrinfo_ex(tsd->hostname, service, &tsd->hints, &tsd->res);
 									error = getaddrinfo(nodename, servname, hints, &aihead);
+
+// 关键代码
+https://github.com/curl/curl/blob/curl-7_68_0/lib/asyn-thread.c#L733
 ```
 关键代码在`Curl_resolver_getaddrinfo`中，如下图。
 ![picture 0](../images/8ad6888a975a9a0d47c8ee508780bdf039e861bf9e697ac481c64498b02b88b4.png)  
