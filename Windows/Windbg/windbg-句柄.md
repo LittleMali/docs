@@ -5,3 +5,10 @@
 !handle 00000080 f
 
 ```
+
+## 看句柄泄露
+```
+!htrace -enable
+!htrace -snapshot
+g
+```
