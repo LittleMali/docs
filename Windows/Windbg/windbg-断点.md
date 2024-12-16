@@ -23,4 +23,7 @@ bp ntdll!RtlAllocateHeap "j (@esp+0xc == 0x400) ''; 'gc'"
 # 删除断点，用序号删除
 bc 0
 
+
+# std::string字符串条件断点: 
+strcmp(api_name._Mypair._Myval2._Bx._Ptr, "qbDownloads")==0
 ```
