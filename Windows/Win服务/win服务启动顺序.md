@@ -1,6 +1,8 @@
 # win服务启动顺序
 
 ## 启动顺序
+https://learn.microsoft.com/en-us/windows/win32/services/automatically-starting-services
+
 During system boot, the SCM starts all auto-start services and the services on which they depend. For example, if an auto-start service depends on a demand-start service, the demand-start service is also started automatically.
 
 The load order is determined by the following:
