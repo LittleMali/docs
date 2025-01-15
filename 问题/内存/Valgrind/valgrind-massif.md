@@ -45,7 +45,7 @@ $ ms_print massif.out.pid ms-print-result.txt
 ```
 如下图，会得到类似的一个文本格式产物，不是很好看。  
 这玩意没怎么看懂，大概来说，横坐标是指令个数，纵坐标是堆内存大小。为什么横坐标从一开始没有值呢，不清楚啊。
-![picture 1](../../images/56cc1276c9a7083ccde3af49521683811a379a66190bac589ffc7419bb5c6fb5.png)  
+![picture 1](../../../images/56cc1276c9a7083ccde3af49521683811a379a66190bac589ffc7419bb5c6fb5.png)  
 
 ## massif-visualizer
 massif-visualizer会跟着valgrind一起安装，如果没有，那就单独装一下。
@@ -57,5 +57,5 @@ $ massif-visualizer massif.out.pid
 * 纵坐标是堆内存大小。
 * 图中还标识了峰值内存的大小。
 * 在右侧可以展开，看到调用栈。
-![picture 2](../../images/b2701a47d12a6c3d9f9806cd452c1b9e574b0403c65122de5e64d80e88949cd6.png)  
+![picture 2](../../../images/b2701a47d12a6c3d9f9806cd452c1b9e574b0403c65122de5e64d80e88949cd6.png)  
 

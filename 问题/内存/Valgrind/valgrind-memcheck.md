@@ -101,7 +101,7 @@ static void mc_fini ( Int exitcode );
 上述这些 VG_(track_*) 函数是用于向Valgrind内核注册相应的事件监控，这些事件难以通过插桩来拦截的，如堆块的分配、堆栈指针的修改、信号处理等。当注册的事件发生时，Valgrind内核会调用Memcheck注册的函数。
 
 ## 内存错误检测
-![picture 1](../../images/d48129580c61d5f47609888bbbc56e1c2e2e22e9206e41df0ebe072246312c78.png)  
+![picture 1](../../../images/d48129580c61d5f47609888bbbc56e1c2e2e22e9206e41df0ebe072246312c78.png)  
 
 * Valid-Value表  
 对于进程的整个地址空间中的每一个字节(byte)，都有与之对应8个bits；对于CPU每个寄存器，也有一个与之对应的bit向量。这些bits负责记录该字节或者寄存器值是否已初始化。

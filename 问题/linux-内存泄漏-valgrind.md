@@ -39,12 +39,12 @@ ui卡死时，看日志，ipc有收到很大的一个数据包（1.7G）。
 * step4：执行一次病毒扫描+清理，然后分析valgrind输出结果。
 
 看内存泄漏的结果，我们确实有泄漏，415处地方一共泄漏了207KB内存。
-![picture 4](../../images/98f9ee67b2d3b68bc37475527412d884c08edb91f0d531600f83ca139fa29620.png)  
+![picture 4](../images/98f9ee67b2d3b68bc37475527412d884c08edb91f0d531600f83ca139fa29620.png)  
 
 挨个查看内存泄漏的地方。
 
 比如这个qt的报错。这个错误可以忽略，qt是自行管理内存的，而且，这种只有1 block的泄漏，表示只泄漏了一次，单次的内存泄漏不可能引起进程内存的不断增长。
-![picture 2](../../images/8699ec5042ea4b2b213542951ddb4f86c9d5061b6b6844ce4cfdf228c13fc8c9.png)  
+![picture 2](../images/8699ec5042ea4b2b213542951ddb4f86c9d5061b6b6844ce4cfdf228c13fc8c9.png)  
 
 这一行才是真正的内存泄漏，334 blocks泄漏了内存，看函数调用栈，OnEventRiskListRemove这个地方有new内存，对比代码，跟我们前面代码review找出来的错误一样。
-![picture 3](../../images/350c7ad0d4bdd772cebc8a17294de04b2ca3f10f38cbb389c8cbf54aa9b2ca10.png)  
+![picture 3](../images/350c7ad0d4bdd772cebc8a17294de04b2ca3f10f38cbb389c8cbf54aa9b2ca10.png)  
