@@ -9,7 +9,7 @@ chmod +x intel-oneapi-base-toolkit-2025.1.1.36_offline.sh
 
 ## 运行
 ```shell
-source /opt/intel/oneapi/setvars.sh  # 加载环境变量
+source /home/kingsoft/intel/oneapi/setvars.sh  # 加载环境变量
 
 echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope
 echo 0 | sudo tee /proc/sys/kernel/kptr_restrict
